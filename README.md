@@ -5,10 +5,8 @@
 ### F.A.Q Técnico
 - ¿Qué es 13,10 en los datos en la sección de data?
 > El significado de estos valores, en la tabla ascii son, correspondientemente:
-</br>
-> **10:** salto de linea
-</br>
-> **13:** retorno de carro
+> *10:* salto de linea
+> *13:* retorno de carro
 
 ___
 

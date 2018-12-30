@@ -183,6 +183,15 @@ printMenu:
 
   ret
 
+;-------------------------------------------------------------------------
+; ---> Función pressEnterPrompt
+; ULTIMA ACTUALIZACIÓN: 29/12/2018
+; RECIBE: Nada
+; RETORNA: Nada
+; MODIFICA: Nada
+; CALLS: *
+; DESCRIPCIÓN: Hace que el usuario tenga que presionar 'Enter'
+
 pressEnterPrompt:
   ; Posicionar el cursor
   mov ax, 0117h                        ; X,Y = 1,23 as a single hex value in AX
@@ -199,7 +208,6 @@ pressEnterPrompt:
   int 0x80                            ; Llamar al kernel
 
   ret
-
 
 ;-------------------------------------------------------------------------
 ; ---> Función getInput
