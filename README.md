@@ -1,4 +1,6 @@
-# <img src="turboshoot.png" width="200" style="display:block; margin-left: auto; margin-right: auto;">
+<p align="center">
+  <img src="turboshoot.png" width="200" style="display:block; margin-left: auto; margin-right: auto;">
+</p>
 
 ## Español
 
@@ -12,7 +14,6 @@
   13: retorno de carro
 
 <br />
----
 <br />
 
 ## English
