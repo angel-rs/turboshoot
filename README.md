@@ -1,3 +1,22 @@
-# <img src="turboshoot.png" width="200">
+# <img src="turboshoot.png" width="200" style="display:block; margin-left: auto; margin-right: auto;">
 
-An multiplayer arcade-ish shooting game written in assembler
+## Español
+
+### F.A.Q Técnico
+- ¿Qué es 13,10 en los datos en la sección de data?
+> El significado de estos valores, en la tabla ascii son, correspondientemente:
+</br>
+> **10:** salto de linea
+</br>
+> **13:** retorno de carro
+
+___
+
+
+## English
+
+### An multiplayer arcade-ish shooting game written in assembler
+
+### Technical F.A.Q:
+
+###### Populate...
