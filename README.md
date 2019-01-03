@@ -2,11 +2,10 @@
   <img src="turboshoot.png" width="200" style="display:block; margin-left: auto; margin-right: auto;">
 </p>
 
-Juego arcade de disparos escrito en ensamblador
-An multiplayer arcade-ish shooting game written in assembler
+An multiplayer arcade-ish shooting game written in NASM assembler
 
-System interruptions: http://shell-storm.org/shellcode/files/syscalls.html
-Ansi escape codes: http://ascii-table.com/ansi-escape-sequences.php
+System interruptions: http://shell-storm.org/shellcode/files/syscalls.html <br />
+ANSI escape codes: http://ascii-table.com/ansi-escape-sequences.php <br />
 
 Relevant ASCII codes:
 
