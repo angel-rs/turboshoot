@@ -10,17 +10,17 @@ Ansi escape codes: http://ascii-table.com/ansi-escape-sequences.php
 
 Relevant ASCII codes:
 
-W = 119
-A = 97
-S = 115
-D = 100
-Q = 113
+W = 119 <br />
+A = 97 <br />
+S = 115 <br />
+D = 100 <br />
+Q = 113 <br />
 
-I = 105
-J = 106
-K = 107
-L = 108
-O = 111
+I = 105 <br />
+J = 106 <br />
+K = 107 <br />
+L = 108 <br />
+O = 111 <br />
 
-ESC = 27
-ENTER = 10
+ESC = 27 <br />
+ENTER = 10 <br />
