@@ -13,11 +13,11 @@
 ;-----------------------------------;
 
 ; ============================ INCLUDES ============================
-
 %include "./src/game/graphics/mainMenu.asm"
 %include "./src/game/graphics/gameIntro.asm"
-%include "./src/game/graphics/pressEnterPrompt.asm"
 %include "./src/game/graphics/printGameBox.asm"
+%include "./src/game/graphics/pressEnterToGoBack.asm"
+%include "./src/game/graphics/pressEnterToContinue.asm"
 
 %include "./src/terminal/readStdinTermios.asm"
 %include "./src/terminal/writeStdinTermios.asm"
@@ -26,7 +26,7 @@
 %include "./src/terminal/ansiCursorShow.asm"
 %include "./src/terminal/canonicalOn.asm"
 %include "./src/terminal/canonicalOff.asm"
-%include "./src/terminal/getKeyStroke.asm"
+%include "./src/terminal/getInput.asm"
 %include "./src/terminal/resetCursor.asm"
 %include "./src/terminal/echoOn.asm"
 %include "./src/terminal/echoOff.asm"
@@ -44,12 +44,13 @@
 %include "./__dev__/__dev__hang.asm"
 %include "./__dev__/__dev__test.asm"
 
-; = MACROS =
+; ============================ MACROS ============================
 %macro execute 4
   mov eax, %1
   mov ebx, %2
   mov ecx, %3
   mov edx, %4
+
   call systemInterruption
 %endmacro
 
@@ -73,8 +74,8 @@ section .data
   STDIN equ 0
   STDOUT equ 1
 
-  ICANON      equ 1<<1
-  ECHO        equ 1<<3
+  ICANON equ 1<<1
+  ECHO equ 1<<3
 
   ANSIHIDE db 27, '[?25l'
   ANSIHIDE.LENGTH equ $-ANSIHIDE
@@ -124,8 +125,11 @@ section .data
   titleLine6 db 10, 10, 10, 13, `          \e[0;1m\웃      ►\e[m\                                         \e[31;1m\◄       웃\e[m\  `
   titleLine6.length equ $-titleLine6
 
-  continuePrompt db "Presione 'Enter' para continuar... "
-  continuePrompt.length equ $-continuePrompt
+  pressEnterToContinueMessage db "Presione 'Enter' para continuar... "
+  pressEnterToContinueMessage.length equ $-pressEnterToContinueMessage
+
+  pressEnterToGoBackMessage db "Presione 'Enter' para volver... "
+  pressEnterToGoBackMessage.length equ $-pressEnterToGoBackMessage
 
   menuOption1 db "MENU: "
   menuOption1.length equ $-menuOption1
@@ -133,8 +137,16 @@ section .data
   menuOption2.length equ $-menuOption2
   menuOption3 db "[ 2 ] Instrucciones "
   menuOption3.length equ $-menuOption3
-  menuOption4 db "[ 3 ] Salir "
+  menuOption4 db "[ 3 ] Opciones "
   menuOption4.length equ $-menuOption4
+  menuOption5 db "[ 4 ] Salir "
+  menuOption5.length equ $-menuOption5
+
+  gameInstructions db `\e[31;1m\Turbo\e[m\ \e[0;1m\shoot\e[m\ © es un videojuego ASCII en donde el objetivo es ... `
+  gameInstructions.length equ $-gameInstructions
+
+  byeMessage db `\e[0;1m\Bye! \e[m\ `
+  byeMessage.length equ $-byeMessage
 
   player1 db `\e[0;1m\웃\e[m\ `
   player1.length equ $-player1
@@ -177,11 +189,7 @@ PrintNum:
 
   call    GetStrlen
 
-  inc     edx
-  mov     ecx, bufferOut
-  mov     eax, SYS_WRITE
-  mov     ebx, STDOUT
-  int     80H
+
   ret
 
 ; ---- Turboshoot
@@ -193,23 +201,10 @@ _start:
 
   call clear
 
-  call getKeyStroke
-  mov ecx, bufferIn
-  movzx   esi, byte[bufferIn]
-  push esi
-  call  PrintNum
-
-;  call gameIntro
-;  call mainMenu
-
-  call echoOn
-  call canonicalOn
+  ; call gameIntro
+  call mainMenu
 
   ;call __dev__test
   ;call __dev__hang
 
   call exit
-
-; =================================================================================
-;                                DEMOS DE USO
-; =================================================================================

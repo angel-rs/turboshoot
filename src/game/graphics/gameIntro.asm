@@ -4,7 +4,7 @@
 ; RECIBE: Nada
 ; RETORNA: Nada
 ; MODIFICA: Nada
-; LLAMA: print, pressEnterPrompt
+; LLAMA: print, pressEnterToContinue
 ; DESCRIPCIÓN: Muestra introducción del juego
 
 gameIntro:
@@ -53,5 +53,6 @@ gameIntro:
     mov eax, 1                          ; Carga 1 en eax
     call sleep                          ; Llama a sleep
 
-  call pressEnterPrompt                 ; Espera a que el usuario presione 'Enter'
+  call pressEnterToContinue                 ; Espera a que el usuario presione 'Enter'
+
   ret

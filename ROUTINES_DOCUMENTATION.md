@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="turboshoot.png" width="200" style="display:block; margin-left: auto; margin-right: auto;">
+  <img src="./src/turboshoot.png" width="200" style="display:block; margin-left: auto; margin-right: auto;">
 </p>
 
 ### Ejemplo de uso de las rutinas empleadas en el proyecto

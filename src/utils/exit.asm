@@ -8,6 +8,11 @@
 ; DESCRIPCIÓN: Sale del programa
 
 exit:
+  call clear
+
+  call echoOn
+  call canonicalOn
+
   mov eax, SYS_EXIT        ; invoke SYS_EXIT
   mov ebx, STDIN           ; Return a code of zero
 
