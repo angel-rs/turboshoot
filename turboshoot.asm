@@ -12,32 +12,37 @@
 ; -> Medrano Raúl                   ;
 ;-----------------------------------;
 
-; == INCLUDES ==
-%include "systemInterruption.asm"
-%include "readStdinTermios.asm"
-%include "writeStdinTermios.asm"
-%include "pressEnterPrompt.asm"
-%include "setDimensions.asm"
-%include "ansiCursorHide.asm"
-%include "ansiCursorShow.asm"
-%include "canonicalOn.asm"
-%include "canonicalOff.asm"
-%include "printGameBox.asm"
-%include "getKeyStroke.asm"
-%include "resetCursor.asm"
-%include "mainMenu.asm"
-%include "gameIntro.asm"
-%include "echoOn.asm"
-%include "echoOff.asm"
-%include "gotoxy.asm"
-%include "sleep.asm"
-%include "clear.asm"
-%include "print.asm"
-%include "dwtoa.asm"
-%include "exit.asm"
+; ============================ INCLUDES ============================
 
-%include "__dev__hang.asm"
-%include "__dev__test.asm"
+%include "./src/game/graphics/mainMenu.asm"
+%include "./src/game/graphics/gameIntro.asm"
+%include "./src/game/graphics/pressEnterPrompt.asm"
+%include "./src/game/graphics/printGameBox.asm"
+
+%include "./src/terminal/readStdinTermios.asm"
+%include "./src/terminal/writeStdinTermios.asm"
+%include "./src/terminal/setDimensions.asm"
+%include "./src/terminal/ansiCursorHide.asm"
+%include "./src/terminal/ansiCursorShow.asm"
+%include "./src/terminal/canonicalOn.asm"
+%include "./src/terminal/canonicalOff.asm"
+%include "./src/terminal/getKeyStroke.asm"
+%include "./src/terminal/resetCursor.asm"
+%include "./src/terminal/echoOn.asm"
+%include "./src/terminal/echoOff.asm"
+%include "./src/terminal/gotoxy.asm"
+%include "./src/terminal/clear.asm"
+%include "./src/terminal/print.asm"
+
+%include "./src/utils/systemInterruption.asm"
+%include "./src/utils/sleep.asm"
+%include "./src/utils/exit.asm"
+
+; dwtoa is not yet in a folder cause i don't even know how to explain what it does
+%include "dwtoa.asm"
+
+%include "./__dev__/__dev__hang.asm"
+%include "./__dev__/__dev__test.asm"
 
 ; = MACROS =
 %macro execute 4
