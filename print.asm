@@ -9,8 +9,9 @@
 ; del sistema operativo
 
 print:
-  mov eax, SYS_WRITE               ; Specify SYS_WRITE call
-  mov ebx, SYS_EXIT                ; Specify File Descriptor 1: SYS_EXIT
+  mov eax, SYS_WRITE               ; Especifica que el llamado es del tipo SYS_WRITE
+  mov ebx, SYS_EXIT                ; Especifica que la salida es del tipo SYS_EXIT
+
   call systemInterruption
 
   ret

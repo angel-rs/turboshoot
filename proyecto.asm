@@ -188,27 +188,14 @@ _start:
 
   call clear
 
-  ; call getKeyStroke
-  ;
-  ; mov ecx, bufferIn
-  ;
-  ; cmp ecx, '0'              ; if ecx === 'a'
-  ; je esIgual                ;   esIgual()
-  ; jmp esDiferente           ; else esDiferente()
-  ;
-  ;   esIgual:
-  ;     call clear
-  ;
-  ;   esDiferente:
-  ;     call pressEnterPrompt
+  call getKeyStroke
+  mov ecx, bufferIn
+  movzx   esi, byte[bufferIn]
+  push esi
+  call  PrintNum
 
-  ;movzx   esi, byte[bufferIn]
-
-  ;push    esi
-  ;call    PrintNum
-
-  call gameIntro
-  call mainMenu
+;  call gameIntro
+;  call mainMenu
 
   call echoOn
   call canonicalOn
@@ -221,18 +208,3 @@ _start:
 ; =================================================================================
 ;                                DEMOS DE USO
 ; =================================================================================
-;     SLEEP
-; mov eax, 1     ; cargar en eax la cantidad de segundos a dormir
-; call sleep     ; llamar al procedimiento
-;
-;     GOTOXY
-; mov ah, 0     ; cargar en ah la coordenada X
-; mov al, 0     ; cargar en al la coordenada Y
-; call gotoxy    ; llmar al procedimiento
-;
-;     PRINT
-; mov ecx, clearTerminal          ; Cargar en ecx el string a imprimir
-; mov edx, clearTerminal.length   ; Cargar en edx la longitud del string a imprimir
-; call print                      ; Send control string to console
-;
-;

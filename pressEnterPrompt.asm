@@ -6,6 +6,7 @@
 ; MODIFICA: Nada
 ; LLAMA: gotoxy, print, systemInterruption
 ; DESCRIPCIÓN: Hace que el usuario tenga que presionar 'Enter'
+; Ascii code de la tecla: 10
 
 pressEnterPrompt:
   call resetCursor
