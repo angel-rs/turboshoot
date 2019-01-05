@@ -13,14 +13,23 @@
 ;-----------------------------------;
 
 ; ============================ INCLUDES ============================
+%include "./src/game/logic/gameLoop.asm"
+%include "./src/game/logic/gameCounter.asm"
+%include "./src/game/logic/getGameInput.asm"
+
 %include "./src/game/graphics/mainMenu.asm"
 %include "./src/game/graphics/gameIntro.asm"
+%include "./src/game/graphics/player1Wins.asm"
+%include "./src/game/graphics/player2Wins.asm"
 %include "./src/game/graphics/printGameBox.asm"
+%include "./src/game/graphics/printGameCounter.asm"
+%include "./src/game/graphics/printGameBoard.asm"
 %include "./src/game/graphics/pressEnterToGoBack.asm"
 %include "./src/game/graphics/pressEnterToContinue.asm"
 
 %include "./src/terminal/readStdinTermios.asm"
 %include "./src/terminal/writeStdinTermios.asm"
+%include "./src/terminal/getLengthAndPrint.asm"
 %include "./src/terminal/setDimensions.asm"
 %include "./src/terminal/ansiCursorHide.asm"
 %include "./src/terminal/ansiCursorShow.asm"
@@ -35,7 +44,10 @@
 %include "./src/terminal/print.asm"
 
 %include "./src/utils/systemInterruption.asm"
+%include "./src/utils/convertIntToString.asm"
+%include "./src/utils/strlen.asm"
 %include "./src/utils/sleep.asm"
+%include "./src/utils/atoi.asm"
 %include "./src/utils/exit.asm"
 
 ; dwtoa is not yet in a folder cause i don't even know how to explain what it does
@@ -60,9 +72,15 @@ section .text
 
 ; ============================= BSS Section ============================
 section .bss
+  buffer resb 10
   bufferIn resb 2
   bufferOut resb 2
   TERMIOS resb 36
+
+  ;gameBoard resb 1314                 ; matrix - 18 rows * 73 columns = 1314 bytes
+  i resw 1                            ; index to loop
+  j resw 1                            ; index to loop
+  temp resb 2                         ; temporal variable
 
 ; ============================ Data Section ============================
 section .data
@@ -70,6 +88,25 @@ section .data
   SYS_READ equ 3
   SYS_WRITE equ 4
   SYS_NANOSLEEP equ 162
+
+  gameBoardRow1 db `                                                                       `, 0
+  gameBoardRow2 db `                                                                         `, 0
+  gameBoardRow3 db `                                                                         `, 0
+  gameBoardRow4 db `                                                                         `, 0
+  gameBoardRow5 db `                                                                         `, 0
+  gameBoardRow6 db `                                                                         `, 0
+  gameBoardRow7 db `                                                                         `, 0
+  gameBoardRow8 db `                                                                         `, 0
+  gameBoardRow9 db `           \e[00;1m\웃\e[m\                                              \e[31;1m\웃\e[m\            `, 0
+  gameBoardRow10 db `                                                                         `, 0
+  gameBoardRow11 db `                                                                         `, 0
+  gameBoardRow12 db `                                                                         `, 0
+  gameBoardRow13 db `                                                                         `, 0
+  gameBoardRow14 db `                                                                         `, 0
+  gameBoardRow15 db `                                                                         `, 0
+  gameBoardRow16 db `                                                                         `, 0
+  gameBoardRow17 db `                                                                         `, 0
+  gameBoardRow18 db `                                                                         `, 0
 
   STDIN equ 0
   STDOUT equ 1
@@ -103,6 +140,9 @@ section .data
   timeval:
     tv_sec  dd 0
     tv_usec dd 0
+
+  n equ 18                            ; rows of gameBoard
+  m equ 73                            ; columns of gameBoard
 
   boxLine1 db 13, `\e[32;1m\  ############################################################################# \e[m\ `
   boxLine1.length equ $-boxLine1
@@ -142,23 +182,38 @@ section .data
   menuOption5 db "[ 4 ] Salir "
   menuOption5.length equ $-menuOption5
 
+  player1WinsMessage db `\e[0;1m\웃 Player 1 Wins! \e[m\ `
+  player1WinsMessage.length equ $-player1WinsMessage
+
+  player2WinsMessage db `\e[31;1m\웃 Player 2 Wins! \e[m\ `
+  player2WinsMessage.length equ $-player2WinsMessage
+
   gameInstructions db `\e[31;1m\Turbo\e[m\ \e[0;1m\shoot\e[m\ © es un videojuego ASCII en donde el objetivo es ... `
   gameInstructions.length equ $-gameInstructions
 
   byeMessage db `\e[0;1m\Bye! \e[m\ `
   byeMessage.length equ $-byeMessage
 
-  player1 db `\e[0;1m\웃\e[m\ `
+  timerValue db 60
+  timerValueMessage db "60", 0
+
+  player1 db `\e[00;1m\웃\e[m\ `
   player1.length equ $-player1
 
-  bullet1 db `\e[0;1m\►\e[m\ `
+  player1RemainingBullets db 10
+  player1Score db 0
+
+  bullet1 db `\e[00;1m\►\e[m\ `
   bullet1.length equ $-bullet1
 
-  player2 db `\e[31m\웃\e[m\ `
+  player2 db `\e[31;1m\웃\e[m\ `
   player2.length equ $-player2
 
-  bullet2 db `\e[31m\◄\e[m\ `
+  bullet2 db `\e[31;1m\◄\e[m\ `
   bullet2.length equ $-bullet2
+
+  player2RemainingBullets db 10
+  player2Score db 0
 
   clearTerminal db "                                                                                "
 	clearTerminal.length equ $-clearTerminal
@@ -201,7 +256,7 @@ _start:
 
   call clear
 
-  ; call gameIntro
+  ;call gameIntro
   call mainMenu
 
   ;call __dev__test

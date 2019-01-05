@@ -75,10 +75,7 @@ mainMenu:
   jmp mainMenu                          ; Si la entrada no es valida, vuelve a llamar a la rutina
 
   play:
-    mov ecx, player1
-    mov edx, player1.length
-    call print
-    call exit
+    call gameLoop
 
   instructions:
     call clear

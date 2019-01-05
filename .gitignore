@@ -2,4 +2,7 @@ turboshoot
 turboshoot.o
 codigo_ejemplo
 project-specifications.pdf
-codedump.asm
+__dev__/test.asm
+__dev__/test.o
+__dev__/test
+run_test.sh

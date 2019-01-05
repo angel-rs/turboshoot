@@ -5,7 +5,7 @@
 ; RETORNA: Nada
 ; MODIFICA: Nada
 ; LLAMA: print
-; DESCRIPCIÓN: Muestra el cursor de la terminal
+; DESCRIPCIÓN: Convierte a algo loco..
 
 dwtoa:
   ;~ number to convert = [ebp+8]

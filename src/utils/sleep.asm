@@ -9,11 +9,17 @@
 ; segundos que se encuentren en eax
 
 sleep:
+  push eax
+  push ebx
+
   mov dword [tv_sec], eax
   mov dword [tv_usec], 0
   mov eax, SYS_NANOSLEEP
   mov ebx, timeval
 
   call systemInterruption
+
+  pop ebx
+  pop eax
 
   ret
