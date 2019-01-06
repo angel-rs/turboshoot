@@ -2,7 +2,7 @@
 ; ---> Función atoi
 ; ULTIMA ACTUALIZACIÓN: 05/01/2018
 ; RECIBE: Nada
-; RETORNA: Numeeo en eax
+; RETORNA: Numero en eax
 ; MODIFICA: Nada
 ; LLAMA: Nada
 ; DESCRIPCIÓN: Convierte un numero de string a un entero y lo almacena en eax

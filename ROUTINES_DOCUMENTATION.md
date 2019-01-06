@@ -29,3 +29,27 @@ Imprime en pantalla el string almacenado en **ecx**, el tamaño de dicho string 
   mov edx, 4        ; longitud del mensaje
   call print        ; llamada a la rutina
 ```
+
+#### PRINTDECIMALINTEGER
+Imprime en pantalla un entero
+Ejemplo de uso:
+
+```
+print a byte variable
+        mov     eax, 0
+        mov     al, byte[someVar]
+        call    printDecimalInteger
+
+print a word variable
+        mov     eax
+        mov     ax, word[otherVar]
+        call    printDecimalInteger
+
+print a double-word variable
+        mov     eax, dword[thirdVar]
+        call    printDecimalInteger
+
+print register edx in decimal
+        mov     eax, edx
+        call    printDecimalInteger
+```

@@ -8,80 +8,20 @@
 ; DESCRIPCIÓN: loop del juego
 
 gameLoop:
-  call resetCursor
+  call clear
+  call printGameBox
+  ;call printGameCounter          ; needs to be run in parallel
 
-  call printGameBoard
-
-  ;call getGameInput
-  call printGameCounter
-  ;
-  ; mov eax, 0
-  ; mov ebx, gameBoard
-  ;
-  ; mov word[i], 0
-  ; mov word[j], 0
-  ;
-  ;
-  ; i_loop:
-  ;   mov word[j], 0
-  ;
-  ;   j_loop:
-  ;     mov edx, 1
-  ;     call getInput
-  ;
-  ;     mov dx , word[bufferIn]
-  ;     ;eax will contain the array index and each element is 2 bytes(1 word) long
-  ;     mov  word[ebx + 2 * eax], dx
-  ;     inc eax    ;Incrementing array index by one....
-  ;     inc word[j]
-  ;     mov cx, word[j]
-  ;     cmp cx, word[n]
-  ;     jb j_loop
-  ;
-  ; inc word[i]
-  ; mov cx, word[i]
-  ; cmp cx, word[m]
-  ; jb i_loop
-  ;
-  ;   ;Reading each element of the matrix.(Storing the elements in row major order).......
-  ; mov eax, 0
-  ; mov ebx, gameBoard
+  mov eax, SYS_CLONE ; vfork
+  call systemInterruption
 
 
-  ; -- esto es para imprimir la matriz..
-  ; mov word[i], 0
-  ; mov word[j], 0
+
+    ; call printPlayer1
+    ; call printPlayer2
+    ; call printPlayer1Score
+    ; call printPlayer2Score
+    ;
+  ; call getGameInput               ; loops till eternity
   ;
-  ; i_loop:
-  ;   mov word[j], 0
-  ;   j_loop:
-  ;     ;eax will contain the array index and each element is 2 bytes(1 word) long
-  ;     mov  dx, word[ebx + 2 * eax]
-  ;     ;mov word[num] , dx
-  ;     ;call print_num
-  ;     ;Printing a space after each element.....
-  ;     pusha
-  ;     mov eax, 4
-  ;     mov ebx, 1
-  ;     mov ecx, ' '
-  ;     mov edx, 1
-  ;     int 80h
-  ;     popa
-  ;     inc eax
-  ;     inc word[j]
-  ;     mov cx, word[j]
-  ;     cmp cx, word[n]
-  ;     jb j_loop
-  ;   pusha
-  ;   mov eax, 4
-  ;   mov ebx, 1
-  ;   mov ecx, 10
-  ;   mov edx, 1
-  ;   int 80h
-  ;   popa
-  ;   inc word[i]
-  ;   mov cx, word[i]
-  ;   cmp cx, word[m]
-  ;   jb i_loop
-  ;
-  ; ret
+  ; jmp gameLoop

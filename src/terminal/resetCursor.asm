@@ -8,9 +8,13 @@
 ; DESCRIPCIÓN: Resetea el cursor a la posición 0,0 de la terminal
 
 resetCursor:
+  push ax
+
   mov ah, 0
   mov al, 0
 
   call gotoxy
+
+  pop ax
 
   ret

@@ -5,7 +5,7 @@
 ; RETORNA: Nada
 ; MODIFICA: Nada
 ; LLAMA: systemInterruption
-; DESCRIPCIÓN: loop del juego
+; DESCRIPCIÓN:
 
 printGameCounter:
   call resetCursor
@@ -15,16 +15,10 @@ printGameCounter:
     mov ah, 40
     call gotoxy
 
-  ; -- convert integer to a printable string (ascii)
-    mov eax, [timerValue]
-    lea esi, [buffer]
-    call convertIntToString                ; now the string values is in eax
-    ;mov timerValueMessage, eax
-
   ; -- print current value of timer
-    ;sub eax, 
-    mov ebx, eax
-    call getLengthAndPrint              ; print it
+    mov eax, 0
+    mov al, byte[timerValue]
+    call printDecimalInteger
 
   ; --- sleep 1 seg
     call .sleepOneSecond

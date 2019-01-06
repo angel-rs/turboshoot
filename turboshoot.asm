@@ -16,20 +16,27 @@
 %include "./src/game/logic/gameLoop.asm"
 %include "./src/game/logic/gameCounter.asm"
 %include "./src/game/logic/getGameInput.asm"
+%include "./src/game/logic/player1Fire.asm"
 
 %include "./src/game/graphics/mainMenu.asm"
 %include "./src/game/graphics/gameIntro.asm"
 %include "./src/game/graphics/player1Wins.asm"
 %include "./src/game/graphics/player2Wins.asm"
 %include "./src/game/graphics/printGameBox.asm"
+%include "./src/game/graphics/printPlayer1.asm"
+%include "./src/game/graphics/printPlayer2.asm"
+%include "./src/game/graphics/printPlayer1Score.asm"
+%include "./src/game/graphics/printPlayer2Score.asm"
 %include "./src/game/graphics/printGameCounter.asm"
-%include "./src/game/graphics/printGameBoard.asm"
 %include "./src/game/graphics/pressEnterToGoBack.asm"
+%include "./src/game/graphics/printPlayer1Bullet.asm"
+%include "./src/game/graphics/printPlayer2Bullet.asm"
 %include "./src/game/graphics/pressEnterToContinue.asm"
 
 %include "./src/terminal/readStdinTermios.asm"
 %include "./src/terminal/writeStdinTermios.asm"
 %include "./src/terminal/getLengthAndPrint.asm"
+%include "./src/terminal/printDecimalInteger.asm"
 %include "./src/terminal/setDimensions.asm"
 %include "./src/terminal/ansiCursorHide.asm"
 %include "./src/terminal/ansiCursorShow.asm"
@@ -57,14 +64,14 @@
 %include "./__dev__/__dev__test.asm"
 
 ; ============================ MACROS ============================
-%macro execute 4
-  mov eax, %1
-  mov ebx, %2
-  mov ecx, %3
-  mov edx, %4
-
-  call systemInterruption
-%endmacro
+; %macro execute 4
+;   mov eax, %1
+;   mov ebx, %2
+;   mov ecx, %3
+;   mov edx, %4
+;
+;   call systemInterruption
+; %endmacro
 
 ; ============================ Text Section ============================
 section .text
@@ -77,42 +84,24 @@ section .bss
   bufferOut resb 2
   TERMIOS resb 36
 
-  ;gameBoard resb 1314                 ; matrix - 18 rows * 73 columns = 1314 bytes
-  i resw 1                            ; index to loop
-  j resw 1                            ; index to loop
-  temp resb 2                         ; temporal variable
+  temp resb 2
 
 ; ============================ Data Section ============================
 section .data
   SYS_EXIT equ 1
+  SYS_FORK equ 2
   SYS_READ equ 3
   SYS_WRITE equ 4
+  SYS_CLONE equ 120
   SYS_NANOSLEEP equ 162
-
-  gameBoardRow1 db `                                                                       `, 0
-  gameBoardRow2 db `                                                                         `, 0
-  gameBoardRow3 db `                                                                         `, 0
-  gameBoardRow4 db `                                                                         `, 0
-  gameBoardRow5 db `                                                                         `, 0
-  gameBoardRow6 db `                                                                         `, 0
-  gameBoardRow7 db `                                                                         `, 0
-  gameBoardRow8 db `                                                                         `, 0
-  gameBoardRow9 db `           \e[00;1m\웃\e[m\                                              \e[31;1m\웃\e[m\            `, 0
-  gameBoardRow10 db `                                                                         `, 0
-  gameBoardRow11 db `                                                                         `, 0
-  gameBoardRow12 db `                                                                         `, 0
-  gameBoardRow13 db `                                                                         `, 0
-  gameBoardRow14 db `                                                                         `, 0
-  gameBoardRow15 db `                                                                         `, 0
-  gameBoardRow16 db `                                                                         `, 0
-  gameBoardRow17 db `                                                                         `, 0
-  gameBoardRow18 db `                                                                         `, 0
 
   STDIN equ 0
   STDOUT equ 1
 
-  ICANON equ 1<<1
-  ECHO equ 1<<3
+  ICANON equ 1 << 1
+  ECHO equ 1 << 3
+
+  const10 dd 10
 
   ANSIHIDE db 27, '[?25l'
   ANSIHIDE.LENGTH equ $-ANSIHIDE
@@ -140,9 +129,6 @@ section .data
   timeval:
     tv_sec  dd 0
     tv_usec dd 0
-
-  n equ 18                            ; rows of gameBoard
-  m equ 73                            ; columns of gameBoard
 
   boxLine1 db 13, `\e[32;1m\  ############################################################################# \e[m\ `
   boxLine1.length equ $-boxLine1
@@ -197,23 +183,29 @@ section .data
   timerValue db 60
   timerValueMessage db "60", 0
 
-  player1 db `\e[00;1m\웃\e[m\ `
+  player1 db `\e[0;1m\웃\e[m\ `, 0
   player1.length equ $-player1
-
-  player1RemainingBullets db 10
-  player1Score db 0
-
-  bullet1 db `\e[00;1m\►\e[m\ `
+  player1CurrentXPosition db 20
+  player1CurrentYPosition db 13
+  bullet1 db `\e[0;1m\►\e[m\ `, 0
   bullet1.length equ $-bullet1
+  bullet1CurrentPosition db 0
+  player1Score db 0
+  player1ScoreMessage db `\e[0;1m\Player 1 Score:\e[m\ `
+  player1ScoreMessage.length equ $-player1ScoreMessage
+  player1RemainingBullets db 10
 
-  player2 db `\e[31;1m\웃\e[m\ `
+  player2 db `\e[31;1m\웃\e[m\ `, 0
   player2.length equ $-player2
-
-  bullet2 db `\e[31;1m\◄\e[m\ `
+  player2CurrentXPosition db 60
+  player2CurrentYPosition db 13
+  bullet2 db `\e[31;1m\◄\e[m\ `, 0
   bullet2.length equ $-bullet2
-
-  player2RemainingBullets db 10
+  bullet2CurrentPosition db 0
   player2Score db 0
+  player2ScoreMessage db `\e[0;1m\Player 2 Score:\e[m\ `
+  player2ScoreMessage.length equ $-player2ScoreMessage
+  player2RemainingBullets db 10
 
   clearTerminal db "                                                                                "
 	clearTerminal.length equ $-clearTerminal
