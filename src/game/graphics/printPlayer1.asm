@@ -8,23 +8,16 @@
 ; DESCRIPCIÓN:
 
 printPlayer1:
-  push rax
-  push rcx
-  push rdx
-
   call resetCursor
 
+  ; -- Position cursor in current position of player 1
   mov ah, [player1CurrentXPosition]
   mov al, [player1CurrentYPosition]
-
   call gotoxy
 
+  ; -- print the player
   mov ecx, player1
   mov edx, player1.length
   call print
-
-  pop rdx
-  pop rcx
-  pop rax
 
   ret

@@ -8,22 +8,16 @@
 ; DESCRIPCIÓN:
 
 printPlayer1Bullet:
-  push rcx
-  push rdx
-
   call resetCursor
   call gotoxy
 
-  mov ah, [player1CurrentXPosition]
-  mov al, [player1CurrentYPosition]
+  mov ah, [bullet1StartPositionX]
+  mov al, [temp]
 
   call gotoxy
 
   mov ecx, bullet1
   mov edx, bullet1.length
   call print
-
-  pop rcx
-  pop rdx
 
   ret

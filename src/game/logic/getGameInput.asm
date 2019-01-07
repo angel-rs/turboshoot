@@ -37,63 +37,79 @@ getGameInput:
 
   .player1MoveUp:
     cmp byte[player1CurrentYPosition], 4        ; if:   close to upside invisible wall
-    jle .skip                                   ;       ignore input
+    jle finishGetGameInput                      ;       ignore input
     call erasePlayer1                           ; else: remove player 1
     dec byte[player1CurrentYPosition]           ;       and decrease Y coordinate
-    ret
+    dec byte[bullet1StartPositionY]             ;       same to bullet1StartPositionY
+    call printPlayer1
+    jmp finishGetGameInput
 
   .player1MoveLeft:
-    cmp byte[player1CurrentXPosition], 5        ; if:   close to leftside invisible wall
-    jle .skip                                   ;       ignore input
+    cmp byte[player1CurrentXPosition], 6        ; if:   close to leftside invisible wall
+    jle finishGetGameInput                      ;       ignore input
     call erasePlayer1                           ; else: remove player 1
-    dec byte[player1CurrentXPosition]           ;       and decrease X coordinate
-    ret
+    dec byte[player1CurrentXPosition]           ;       then decrease X coordinate
+    dec byte[bullet1StartPositionX]             ;       same to bullet1StartPositionX
+    call printPlayer1
+    jmp finishGetGameInput
 
   .player1MoveDown:
     cmp byte[player1CurrentYPosition], 21       ; if:   close to bottomside invisible wall
-    jge .skip                                   ;       ignore input
+    jge finishGetGameInput                      ;       ignore input
     call erasePlayer1                           ; else: remove player 1
     inc byte[player1CurrentYPosition]           ;       and increase Y coordinate
-    ret
+    inc byte[bullet1StartPositionY]             ;       same to bullet1StartPositionY
+    call printPlayer1
+    jmp finishGetGameInput
 
   .player1MoveRight:
     cmp byte[player1CurrentXPosition], 75       ; if:   close to rightside invisible wall
-    jge .skip                                   ;       ignore input
+    jge finishGetGameInput                      ;       ignore input
     call erasePlayer1                           ; else: remove player 1
     inc byte[player1CurrentXPosition]           ;       and increase X coordinate
-    ret
+    inc byte[bullet1StartPositionX]             ;       same to bullet1StartPositionX
+    call printPlayer1
+    jmp finishGetGameInput
 
 
 
   .player2MoveUp:
     cmp byte[player2CurrentYPosition], 4        ; if:   close to upside invisible wall
-    jle .skip                                   ;       ignore input
+    jle finishGetGameInput                      ;       ignore input
     call erasePlayer2                           ; else: remove player 2
     dec byte[player2CurrentYPosition]           ;       and decrease Y coordinate
-    ret
+    dec byte[bullet2StartPositionY]             ;       same to player2CurrentPositionY
+    call printPlayer2
+    jmp finishGetGameInput
 
   .player2MoveLeft:
     cmp byte[player2CurrentXPosition], 6        ; if:   close to leftside invisible wall
-    jle .skip                                   ;       ignore input
+    jle finishGetGameInput                      ;       ignore input
     call erasePlayer2                           ; else: remove player 2
     dec byte[player2CurrentXPosition]           ;       and decrease X coordinate
-    ret
+    dec byte[bullet2StartPositionX]             ;       same to player2CurrentPositionX
+    call printPlayer2
+    jmp finishGetGameInput
 
   .player2MoveDown:
     cmp byte[player2CurrentYPosition], 21       ; if:   close to bottomside invisible wall
-    jge .skip                                   ;       ignore input
+    jge finishGetGameInput                      ;       ignore input
     call erasePlayer2                           ; else: remove player 2
     inc byte[player2CurrentYPosition]           ;       and increase Y coordinate
-    ret
+    inc byte[bullet2StartPositionY]             ;       same to bullet1StartPositionY
+    call printPlayer2
+    jmp finishGetGameInput
 
   .player2MoveRight:
-    cmp byte[player2CurrentXPosition], 76       ; if:   close to rightside invisible wall
-    jge .skip                                   ;       ignore input
+    cmp byte[player2CurrentXPosition], 75       ; if:   close to rightside invisible wall
+    jge finishGetGameInput                      ;       ignore input
     call erasePlayer2                           ; else: remove player 2
     inc byte[player2CurrentXPosition]           ;       and increase X coordinate
-    ret
+    inc byte[bullet1StartPositionX]             ;       same to bullet1StartPositionX
+    call printPlayer2
+    jmp finishGetGameInput
 
-  .skip:
+  finishGetGameInput:
     nop
 
   ret

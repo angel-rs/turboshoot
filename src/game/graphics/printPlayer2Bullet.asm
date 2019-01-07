@@ -8,4 +8,16 @@
 ; DESCRIPCIÓN:
 
 printPlayer2Bullet:
+  call resetCursor
+  call gotoxy
+
+  mov ah, [bullet2StartPositionX]
+  mov al, [temp2]
+
+  call gotoxy
+
+  mov ecx, bullet2
+  mov edx, bullet2.length
+  call print
+
   ret

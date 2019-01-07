@@ -29,13 +29,15 @@
 %include "./src/game/graphics/printPlayer1.asm"
 %include "./src/game/graphics/printPlayer2.asm"
 %include "./src/game/graphics/printGameTimer.asm"
+%include "./src/game/graphics/bulletCollision1.asm"
+%include "./src/game/graphics/bulletCollision2.asm"
 %include "./src/game/graphics/printPlayer1Score.asm"
 %include "./src/game/graphics/printPlayer2Score.asm"
 %include "./src/game/graphics/pressEnterToGoBack.asm"
 %include "./src/game/graphics/printPlayer1Bullet.asm"
 %include "./src/game/graphics/printPlayer2Bullet.asm"
-%include "./src/game/graphics/printPlayer1BulletInfo.asm"
-%include "./src/game/graphics/printPlayer2BulletInfo.asm"
+%include "./src/game/graphics/printPlayer1RemainingBullets.asm"
+%include "./src/game/graphics/printPlayer2RemainingBullets.asm"
 %include "./src/game/graphics/pressEnterToContinue.asm"
 
 %include "./src/terminal/readStdinTermios.asm"
@@ -57,6 +59,7 @@
 
 %include "./src/utils/systemInterruption.asm"
 %include "./src/utils/convertIntToString.asm"
+%include "./src/utils/forkProcess.asm"
 %include "./src/utils/threads.asm"
 %include "./src/utils/strlen.asm"
 %include "./src/utils/sleep.asm"
@@ -77,8 +80,6 @@ section .bss
   bufferOut resb 2
   TERMIOS resb 36
 
-  temp resb 2
-
 ; ============================ Data Section ============================
 section .data
   SYS_EXIT equ 1
@@ -96,6 +97,9 @@ section .data
   ECHO equ 1 << 3
 
   count dq MAX_LINES
+
+  temp db 0                       ; store start Y value of player 1 bullet
+  temp2 db 0                      ; store start Y value of player 2 bullet
 
   ANSIHIDE db 27, '[?25l'
   ANSIHIDE.LENGTH equ $-ANSIHIDE
@@ -169,24 +173,29 @@ section .data
   gameInstructions db `\e[31;1m\Turbo\e[m\ \e[0;1m\shoot\e[m\ © es un videojuego ASCII en donde el objetivo es ... `
   gameInstructions.length equ $-gameInstructions
 
+  explosion db `\e[33;1m\* \e[m\ `, 0
+  explosion.length equ $-explosion
+
   remainingBulletsInfo db "▲"
   remainingBulletsInfo.length equ $-remainingBulletsInfo
 
   byeMessage db `\e[0;1m\Bye! \e[m\ `
   byeMessage.length equ $-byeMessage
 
-  timerValue db 11
+  timerValue db 60
   gameFinishedFlag db 0
 
   player1 db `\e[0;1m\웃\e[m\ `, 0
   player1.length equ $-player1
   player1CurrentXPosition db 20
   player1CurrentYPosition db 13
-  bullet1 db `\e[0;1m\►\e[m\ `, 0
+  bullet1 db `\e[0;1m\►\e[m\ `
   bullet1.length equ $-bullet1
-  bullet1CurrentPosition db 0
+  bullet1StartPositionX db 22
+  bullet1StartPositionY db 13
   player1Score db 0
   player1RemainingBullets db 10
+  player1ShotBulletFlag db 0
   player1MovementsInSameAxis db 0
   player1ScoreMessage db `| \e[0;1m\Player 1 Score:\e[m\ `
   player1ScoreMessage.length equ $-player1ScoreMessage
@@ -195,10 +204,12 @@ section .data
   player2.length equ $-player2
   player2CurrentXPosition db 60
   player2CurrentYPosition db 13
-  bullet2 db `\e[31;1m\◄\e[m\ `, 0
+  bullet2 db `\e[31;1m\◄\e[m\ `
   bullet2.length equ $-bullet2
-  bullet2CurrentPosition db 0
+  bullet2StartPositionX db 58
+  bullet2StartPositionY db 13
   player2Score db 0
+  player2ShotBulletFlag db 0
   player2RemainingBullets db 10
   player2ScoreMessage db `| \e[0;1m\Player 2 Score:\e[m\ `
   player2ScoreMessage.length equ $-player2ScoreMessage

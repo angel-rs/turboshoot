@@ -10,40 +10,75 @@
 gameLoop:
   call clear
   call printGameBox
+  call .printGui
 
   ; create thread for counter
   mov rdi, .timerThread
   call thread_create
 
-  ; create thread for printing game status
-  mov rdi, .printingThread
-  call thread_create
-
   ; create a thread for reading user input
   mov rdi, .getGameInput
   call thread_create
-
+                                  ; --- main process is here
   call __dev__hang
 
   .getGameInput:
     call getGameInput
+
+      ; -- forced delay
+      mov eax, 0
+      mov ebx, 30000000                        ; 30ms/frame
+      call sleep
+
     jmp .getGameInput
 
-  .printingThread:
+  .timerThread:
+    call gameTimer                ; this runs eternally
+
+  .printGui:
     call printPlayer1
     call printPlayer2
     call printPlayer1Score
     call printPlayer2Score
-    call printPlayer1BulletInfo
-    call printPlayer2BulletInfo
-    call printGameTimer
+    call printPlayer1RemainingBullets
+    call printPlayer2RemainingBullets
 
-    ; ~ 120 fps
-    mov eax, 0                ; 0 seconds
-    mov ebx, 8330000          ; 8.33 miliseconds
-    call sleep                ; halt execution
+    ; -- printing score messages for player 1
+      ; -- Position cursor
+        mov al, 24
+        mov ah, 8
+        call gotoxy
+      ; -- Print message
+        mov ecx, player1ScoreMessage
+        mov edx, player1ScoreMessage.length
+        call print
+    ; -- printing bullet icon for player 2
+      ; -- Position cursor
+        mov al, 24
+        mov ah, 4
+        call gotoxy
+      ; -- Print bullet 'icon'
+        mov ecx, remainingBulletsInfo
+        mov edx, remainingBulletsInfo.length
+        call print
 
-    jmp .printingThread
+    ; -- printing score messages for player 2
+      ; -- Position cursor
+        mov al, 24
+        mov ah, 58
+        call gotoxy
+      ; -- Print message
+        mov ecx, player2ScoreMessage
+        mov edx, player1ScoreMessage.length
+        call print
+    ; -- printing bullet icon for player 2
+      ; -- Position cursor
+        mov al, 24
+        mov ah, 54
+        call gotoxy
+      ; -- Print bullet 'icon'
+        mov ecx, remainingBulletsInfo
+        mov edx, remainingBulletsInfo.length
+        call print
 
-  .timerThread:
-    call gameTimer                ; this runs eternally
+    ret

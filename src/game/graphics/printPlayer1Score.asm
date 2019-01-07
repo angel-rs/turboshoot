@@ -12,16 +12,6 @@ printPlayer1Score:
 
   ; -- Position cursor
     mov al, 24
-    mov ah, 8
-    call gotoxy
-
-  ; -- Print message
-    mov ecx, player1ScoreMessage
-    mov edx, player1ScoreMessage.length
-    call print
-
-  ; -- Position cursor
-    mov al, 24
     mov ah, 26
     call gotoxy
 

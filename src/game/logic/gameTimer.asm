@@ -8,12 +8,13 @@
 ; DESCRIPCIÓN: Actualiza el timer de la partida
 
 gameTimer:
+  call printGameTimer
+
   call .sleepOneSecond
 
   dec byte[timerValue]                    ; decrease 1 second
 
-  ; -- if timer is 9, remove extra 0
-  cmp byte[timerValue], 9
+  cmp byte[timerValue], 9                 ; if timer == 9: remove extra 0 from console
   je .removeExtra0InTimer
 
   cmp byte[timerValue], 0                ; if timer == 0:

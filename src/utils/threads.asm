@@ -1,6 +1,5 @@
 ;; Thanks @skeeto for your humble contribution to the open source community
 ;; https://github.com/skeeto/pure-linux-threads-demo
-
 ;; ------------------------------------------------------------------------
 ;; Pure assembly, library-free Linux threading demo
 ;; sched.h
