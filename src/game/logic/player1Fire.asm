@@ -10,7 +10,7 @@
 player1Fire:                                    ; Every time player 1 Presses Q, creates a thread for the bullet
   cmp byte[player1RemainingBullets], 0          ; if    remainingBullets: 0
   je .ignorePlayer1Fire                         ;       ignore input
-  cmp byte[player1ShotBulletFlag], 1          ; if    remainingBullets: 0
+  cmp byte[player1ShotBulletFlag], 1            ; if    already shot one bullet
   je .ignorePlayer1Fire                         ;       ignore input
   dec byte[player1RemainingBullets]             ; else: decrease bullets
   call printPlayer1RemainingBullets             ;       and print remaining bullets

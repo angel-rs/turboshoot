@@ -10,19 +10,23 @@
 gameLoop:
   call clear
   call printGameBox
-  call .printGui
+  call printGUI
 
   ; create thread for counter
-  mov rdi, .timerThread
-  call thread_create
+    mov rdi, .timerThread
+    call thread_create
 
   ; create a thread for reading user input
-  mov rdi, .getGameInput
-  call thread_create
-                                  ; --- main process is here
-  call __dev__hang
+    mov rdi, .getGameInput
+    call thread_create
+
+  jmp checkUntilGameFinishes
 
   .getGameInput:
+    ; -- if gameFinishedFlag == 1: kill thread
+      cmp byte[gameFinishedFlag], 1
+      je .killInputThread                   ; kill thread process
+
     call getGameInput
 
       ; -- forced delay
@@ -32,53 +36,55 @@ gameLoop:
 
     jmp .getGameInput
 
+    .killInputThread:
+      call killThread
+      ret
+
   .timerThread:
-    call gameTimer                ; this runs eternally
+    ; IN ONE OF THESE TWO LINES BREAKS THE CODE
+    ; cmp byte[timerValue], 9                 ; if timer == 9: remove extra 0 from console
+    ; je .removeExtra0InTimer
 
-  .printGui:
-    call printPlayer1
-    call printPlayer2
-    call printPlayer1Score
-    call printPlayer2Score
-    call printPlayer1RemainingBullets
-    call printPlayer2RemainingBullets
+    cmp byte[timerValue], 0
+    je .onCounterReach0
+    ; mov al, [timerValue]
+    ; mov ah, [ZERO]
+    ; cmp al, ah                           ; if timer == 9: remove extra 0 from console
+    ; je .onCounterReach0
 
-    ; -- printing score messages for player 1
-      ; -- Position cursor
-        mov al, 24
-        mov ah, 8
-        call gotoxy
-      ; -- Print message
-        mov ecx, player1ScoreMessage
-        mov edx, player1ScoreMessage.length
-        call print
-    ; -- printing bullet icon for player 2
-      ; -- Position cursor
-        mov al, 24
-        mov ah, 4
-        call gotoxy
-      ; -- Print bullet 'icon'
-        mov ecx, remainingBulletsInfo
-        mov edx, remainingBulletsInfo.length
-        call print
+    call gameTimer
 
-    ; -- printing score messages for player 2
-      ; -- Position cursor
-        mov al, 24
-        mov ah, 58
-        call gotoxy
-      ; -- Print message
-        mov ecx, player2ScoreMessage
-        mov edx, player1ScoreMessage.length
-        call print
-    ; -- printing bullet icon for player 2
-      ; -- Position cursor
-        mov al, 24
-        mov ah, 54
-        call gotoxy
-      ; -- Print bullet 'icon'
-        mov ecx, remainingBulletsInfo
-        mov edx, remainingBulletsInfo.length
-        call print
+    ; -- sleep one second
+      mov eax, 1
+      mov ebx, 500
+      call sleep
 
-    ret
+    jmp .timerThread
+
+    .onCounterReach0:
+      call printGameTimer
+      call killThread                   ; kill thread process
+
+    .removeExtra0InTimer:
+      ;  -- position cursor
+        mov ah, 41
+        mov al, 24
+        call gotoxy
+
+      ; -- remove extra 0
+        mov ecx, emptySpace
+        mov edx, emptySpace.length
+        call print
+        ret
+
+checkUntilGameFinishes:
+  mov dh, byte[gameTimer]
+  cmp dh, 0
+  je gameFinished
+
+  ; -- forced delay
+    mov eax, 0
+    mov ebx, 35000000                        ; 30ms/frame
+    call sleep
+
+  jmp checkUntilGameFinishes

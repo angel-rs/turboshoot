@@ -15,12 +15,16 @@
 ; ============================ INCLUDES ============================
 %include "./src/game/logic/gameLoop.asm"
 %include "./src/game/logic/gameTimer.asm"
+%include "./src/game/logic/gameFinished.asm"
 %include "./src/game/logic/getGameInput.asm"
 %include "./src/game/logic/player1Fire.asm"
 %include "./src/game/logic/player2Fire.asm"
+%include "./src/game/logic/restoreDefaults.asm"
 
 %include "./src/game/graphics/mainMenu.asm"
 %include "./src/game/graphics/gameIntro.asm"
+%include "./src/game/graphics/printGUI.asm"
+%include "./src/game/graphics/draw.asm"
 %include "./src/game/graphics/player1Wins.asm"
 %include "./src/game/graphics/player2Wins.asm"
 %include "./src/game/graphics/erasePlayer1.asm"
@@ -63,7 +67,6 @@
 %include "./src/utils/threads.asm"
 %include "./src/utils/strlen.asm"
 %include "./src/utils/sleep.asm"
-;%include "./src/utils/atoi.asm"  UNUSED -- remove on release
 %include "./src/utils/exit.asm"
 
 %include "./__dev__/__dev__hang.asm"
@@ -82,6 +85,8 @@ section .bss
 
 ; ============================ Data Section ============================
 section .data
+  ZERO equ 0
+
   SYS_EXIT equ 1
   SYS_FORK equ 2
   SYS_READ equ 3
@@ -164,6 +169,9 @@ section .data
   menuOption4 db "[ 3 ] Salir "
   menuOption4.length equ $-menuOption4
 
+  drawMessage db `\e[0;1m\  웃 Draw! \e[m\ \e[31;1m\웃\e[m\ `
+  drawMessage.length equ $-drawMessage
+
   player1WinsMessage db `\e[0;1m\웃 Player 1 Wins! \e[m\ `
   player1WinsMessage.length equ $-player1WinsMessage
 
@@ -182,7 +190,7 @@ section .data
   byeMessage db `\e[0;1m\Bye! \e[m\ `
   byeMessage.length equ $-byeMessage
 
-  timerValue db 60
+  timerValue db 11
   gameFinishedFlag db 0
 
   player1 db `\e[0;1m\웃\e[m\ `, 0
@@ -208,6 +216,7 @@ section .data
   bullet2.length equ $-bullet2
   bullet2StartPositionX db 58
   bullet2StartPositionY db 13
+  player2MovementsInSameAxis
   player2Score db 0
   player2ShotBulletFlag db 0
   player2RemainingBullets db 10
@@ -228,7 +237,6 @@ _start:
   call setDimensions
 
   call clear
-
   ;call gameIntro
   call mainMenu
 
