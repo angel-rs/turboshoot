@@ -12,7 +12,7 @@ printPlayer1Score:
 
   ; -- Position cursor
     mov al, 24
-    mov ah, 6
+    mov ah, 8
     call gotoxy
 
   ; -- Print message
@@ -22,7 +22,7 @@ printPlayer1Score:
 
   ; -- Position cursor
     mov al, 24
-    mov ah, 22
+    mov ah, 26
     call gotoxy
 
   ; -- Print score

@@ -5,11 +5,12 @@
 ### Ejemplo de uso de las rutinas empleadas en el proyecto
 
 #### SLEEP
-Detiene la ejecución durante la cantidad de segudos que se encuentre en el registro **eax**
+Detiene la ejecución durante la cantidad de segudos que se encuentre en el registro **eax** y de nano segundos que se encuentren en **ebx**
 
 ```
   mov eax, 1        ; 1 segundo
-  call sleep        ; llamada a la rutina
+  mov ebx, 100      ; 100 nanosegundos
+  call sleep        ; llamada a la rutina | detendrá la ejecución por 1s y 100ns
  ```
 
  #### GOTOXY
@@ -52,4 +53,12 @@ print a double-word variable
 print register edx in decimal
         mov     eax, edx
         call    printDecimalInteger
+```
+
+#### THREAD_CREATE
+Crea hilo de proceso
+
+```
+  mov rdi, threadfn         ; recibe en rdi, la rutina a ejecutar en el hilo
+  call thread_create        ; llamado a la rutina
 ```

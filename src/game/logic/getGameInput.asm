@@ -32,60 +32,68 @@ getGameInput:
     je .player2MoveDown
     cmp byte[bufferIn], 'l'
     je .player2MoveRight
-    ; cmp byte[bufferIn], 'o'
-    ; je .player2Fire
+    cmp byte[bufferIn], 'o'
+    je player2Fire
 
   .player1MoveUp:
-    cmp byte[player1CurrentYPosition], 4        ; if: close to upside invisible wall
-    jle .skip                                   ;     ignore input and skip
-    dec byte[player1CurrentYPosition]           ; else: decrese Y coordinate
+    cmp byte[player1CurrentYPosition], 4        ; if:   close to upside invisible wall
+    jle .skip                                   ;       ignore input
+    call erasePlayer1                           ; else: remove player 1
+    dec byte[player1CurrentYPosition]           ;       and decrease Y coordinate
     ret
 
   .player1MoveLeft:
-    cmp byte[player1CurrentXPosition], 5        ; if: close to leftside invisible wall
-    jle .skip                                   ;     ignore input and skip
-    dec byte[player1CurrentXPosition]           ; else: decrease X coordinate
+    cmp byte[player1CurrentXPosition], 5        ; if:   close to leftside invisible wall
+    jle .skip                                   ;       ignore input
+    call erasePlayer1                           ; else: remove player 1
+    dec byte[player1CurrentXPosition]           ;       and decrease X coordinate
     ret
 
   .player1MoveDown:
-    cmp byte[player1CurrentYPosition], 21       ; if: close to bottomside invisible wall
-    jge .skip                                   ;     ignore input and skip
-    inc byte[player1CurrentYPosition]           ; else: increase Y coordinate
+    cmp byte[player1CurrentYPosition], 21       ; if:   close to bottomside invisible wall
+    jge .skip                                   ;       ignore input
+    call erasePlayer1                           ; else: remove player 1
+    inc byte[player1CurrentYPosition]           ;       and increase Y coordinate
     ret
 
   .player1MoveRight:
-    cmp byte[player1CurrentXPosition], 76       ; if: close to rightside invisible wall
-    jge .skip                                   ;     ignore input and skip
-    inc byte[player1CurrentXPosition]           ; else: increase X coordinate
+    cmp byte[player1CurrentXPosition], 75       ; if:   close to rightside invisible wall
+    jge .skip                                   ;       ignore input
+    call erasePlayer1                           ; else: remove player 1
+    inc byte[player1CurrentXPosition]           ;       and increase X coordinate
     ret
 
 
 
   .player2MoveUp:
-    cmp byte[player2CurrentYPosition], 4        ; if: close to upside invisible wall
-    jle .skip                                   ;     ignore input and skip
-    dec byte[player2CurrentYPosition]
+    cmp byte[player2CurrentYPosition], 4        ; if:   close to upside invisible wall
+    jle .skip                                   ;       ignore input
+    call erasePlayer2                           ; else: remove player 2
+    dec byte[player2CurrentYPosition]           ;       and decrease Y coordinate
     ret
 
   .player2MoveLeft:
-    cmp byte[player2CurrentXPosition], 5        ; if: close to leftside invisible wall
-    jle .skip
-    dec byte[player2CurrentXPosition]
+    cmp byte[player2CurrentXPosition], 6        ; if:   close to leftside invisible wall
+    jle .skip                                   ;       ignore input
+    call erasePlayer2                           ; else: remove player 2
+    dec byte[player2CurrentXPosition]           ;       and decrease X coordinate
     ret
 
   .player2MoveDown:
-    cmp byte[player2CurrentYPosition], 21       ; if: close to bottomside invisible wall
-    jge .skip
-    inc byte[player2CurrentYPosition]
+    cmp byte[player2CurrentYPosition], 21       ; if:   close to bottomside invisible wall
+    jge .skip                                   ;       ignore input
+    call erasePlayer2                           ; else: remove player 2
+    inc byte[player2CurrentYPosition]           ;       and increase Y coordinate
     ret
 
   .player2MoveRight:
-    cmp byte[player2CurrentXPosition], 76       ; if: close to rightside invisible wall
-    jge .skip
-    inc byte[player2CurrentXPosition]
+    cmp byte[player2CurrentXPosition], 76       ; if:   close to rightside invisible wall
+    jge .skip                                   ;       ignore input
+    call erasePlayer2                           ; else: remove player 2
+    inc byte[player2CurrentXPosition]           ;       and increase X coordinate
     ret
 
   .skip:
-    ret
+    nop
 
   ret

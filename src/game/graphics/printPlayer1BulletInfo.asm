@@ -1,33 +1,33 @@
 ;-------------------------------------------------------------------------
-; ---> Función printPlayer2Score
+; ---> Función printPlayer1BulletInfo
 ; ULTIMA ACTUALIZACIÓN: 05/01/2018
 ; RECIBE: Nada
 ; RETORNA: Nada
 ; MODIFICA: Nada
 ; LLAMA: systemInterruption
-; DESCRIPCIÓN: Imprime el puntaje del jugador 2 en consola
+; DESCRIPCIÓN: Imprime la cantidad de balas restantes al jugador 1
 
-printPlayer2Score:
+printPlayer1BulletInfo:
   call resetCursor
 
   ; -- Position cursor
     mov al, 24
-    mov ah, 58
+    mov ah, 4
     call gotoxy
 
-  ; -- Print message
-    mov ecx, player2ScoreMessage
-    mov edx, player1ScoreMessage.length
+  ; -- Print bullet 'icon'
+    mov ecx, remainingBulletsInfo
+    mov edx, remainingBulletsInfo.length
     call print
 
   ; -- Position cursor
     mov al, 24
-    mov ah, 76
+    mov ah, 5
     call gotoxy
 
-  ; -- Print score
+  ; -- Print amount of remaining bullets
     mov eax, 0
-    mov al, byte[player2Score]
+    mov al, byte[player1RemainingBullets]
     call printDecimalInteger
 
   ret

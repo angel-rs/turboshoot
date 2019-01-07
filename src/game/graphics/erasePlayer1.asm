@@ -1,29 +1,23 @@
 ;-------------------------------------------------------------------------
-; ---> Función printPlayer1Bullet
-; ULTIMA ACTUALIZACIÓN: 05/01/2018
-; RECIBE: Posicion del jugador, X -> al, Y -> ah
+; ---> Función erasePlayer1
+; ULTIMA ACTUALIZACIÓN: 06/01/2018
+; RECIBE: Nada
 ; RETORNA: Nada
 ; MODIFICA: Nada
 ; LLAMA: systemInterruption
-; DESCRIPCIÓN:
+; DESCRIPCIÓN: Borra del tablero al jugador 1
 
-printPlayer1Bullet:
-  push rcx
-  push rdx
-
+erasePlayer1:
   call resetCursor
-  call gotoxy
 
+  ; -- position cursor
   mov ah, [player1CurrentXPosition]
   mov al, [player1CurrentYPosition]
-
   call gotoxy
 
-  mov ecx, bullet1
-  mov edx, bullet1.length
+  ; -- remove player
+  mov ecx, emptySpace
+  mov edx, emptySpace.length
   call print
-
-  pop rcx
-  pop rdx
 
   ret

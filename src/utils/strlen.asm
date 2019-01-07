@@ -9,19 +9,19 @@
 ; y lo almacena en eax
 
 strlen:
-  push ebx
-  push ecx
+  push rbx
+  push rcx
 
-  mov   ebx, edi
-  xor   al, al
-  mov   ecx, 0xffffffff
+  mov ebx, edi
+  xor al, al
+  mov ecx, 0xffffffff
 
   repne scasb               ; REPeat while Not Equal [edi] != al
 
-  sub   edi, ebx            ; length = offset of (edi - ebx)
-  mov   eax, edi
+  sub edi, ebx            ; length = offset of (edi - ebx)
+  mov eax, edi
 
-  pop ebx
-  pop ecx
+  pop rbx
+  pop rcx
 
   ret

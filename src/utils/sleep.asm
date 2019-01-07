@@ -6,20 +6,20 @@
 ; MODIFICA: Nada
 ; LLAMA: systemInterruption
 ; DESCRIPCIÓN: detiene la ejecución del programa por la cantidad de
-; segundos que se encuentren en eax
+; segundos que se encuentren en eax y nano segundos que se encuentren en ebx
 
 sleep:
-  push eax
-  push ebx
+  push rax
+  push rbx
 
   mov dword [tv_sec], eax
-  mov dword [tv_usec], 0
+  mov dword [tv_usec], ebx
   mov eax, SYS_NANOSLEEP
   mov ebx, timeval
 
   call systemInterruption
 
-  pop ebx
-  pop eax
+  pop rbx
+  pop rax
 
   ret

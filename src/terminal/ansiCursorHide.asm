@@ -8,14 +8,14 @@
 ; DESCRIPCIÓN: esconde el cursor de la terminal
 
 ansiCursorHide:
-  push ecx
-  push edx
+  push rcx
+  push rdx
 
   mov ecx, ANSIHIDE
   mov edx, ANSIHIDE.LENGTH
   call print
 
-  pop edx
-  pop ecx
+  pop rdx
+  pop rcx
 
   ret

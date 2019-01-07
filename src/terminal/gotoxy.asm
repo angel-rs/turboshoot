@@ -13,7 +13,14 @@
 ; http://hextodecimal.com/index.php?hex=05
 
 gotoxy:
-  pushad                              ; Save caller's registers
+  push rax                              ; Save caller's registers
+  push rcx
+  push rdx
+  push rbx
+  push rbp
+  push rsi
+  push rdi
+
   xor ebx, ebx                        ; Zero EBX
   xor ecx, ecx                        ; Ditto ECX
 
@@ -32,5 +39,12 @@ gotoxy:
   mov edx, POSLEN                      ; Pass the length of the control string
   call print                           ; Send control string to the console
 
-  popad                                ; Restore caller's registers
+  pop rdi
+  pop rsi
+  pop rbp
+  pop rbx
+  pop rdx
+  pop rcx
+  pop rax                           ; restore all registers
+
   ret

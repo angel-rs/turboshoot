@@ -48,15 +48,6 @@ mainMenu:
       mov edx, menuOption4.length
       call print
 
-    ; -> Imprime 'Salir'
-      mov ah, 33
-      mov al, 15
-      call gotoxy
-
-      mov ecx, menuOption5
-      mov edx, menuOption5.length
-      call print
-
   mov edx, 2                          ; longitud de la entrada a leer
   call getInput                       ; obtener input y es almacenado en bufferIn
 
@@ -67,10 +58,7 @@ mainMenu:
   je instructions
 
   cmp byte[bufferIn], '3'
-  je options
-
-  cmp byte[bufferIn], '4'
-  je _exit
+  je exitGame
 
   jmp mainMenu                          ; Si la entrada no es valida, vuelve a llamar a la rutina
 
@@ -88,18 +76,7 @@ mainMenu:
     call pressEnterToGoBack
     jmp mainMenu
 
-  options:
-    call clear
-    call resetCursor
-
-    ; mov ecx, gameOptions
-    ; mov edx, gameOptions.length
-    ; call print
-
-    call pressEnterToGoBack
-    jmp mainMenu
-
-  _exit:
+  exitGame:
     call clear
 
     mov al, 12

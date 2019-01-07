@@ -14,7 +14,14 @@ printDecimalInteger:
     .ct1 resd 1  ; to keep track of the size of the string
 
   section .text
-    pushad                          ; save all registers
+
+    push rax
+    push rcx
+    push rdx
+    push rbx
+    push rbp
+    push rsi
+    push rdi
 
     mov dword[.ct1], 0   ; assume initially 0
     mov edi, .decstr     ; edi points to decstring
@@ -39,6 +46,12 @@ printDecimalInteger:
       mov ebx, STDOUT
       int 0x80
 
-      popad                           ; restore all registers
+    pop rdi
+    pop rsi
+    pop rbp
+    pop rbx
+    pop rdx
+    pop rcx
+    pop rax                          ; restore all registers
 
   ret

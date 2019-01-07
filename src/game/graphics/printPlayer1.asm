@@ -8,9 +8,9 @@
 ; DESCRIPCIÓN:
 
 printPlayer1:
-  push ax
-  push cx
-  push dx
+  push rax
+  push rcx
+  push rdx
 
   call resetCursor
 
@@ -23,8 +23,8 @@ printPlayer1:
   mov edx, player1.length
   call print
 
-  pop dx
-  pop cx
-  pop ax
+  pop rdx
+  pop rcx
+  pop rax
 
   ret

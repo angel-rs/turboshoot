@@ -14,23 +14,28 @@
 
 ; ============================ INCLUDES ============================
 %include "./src/game/logic/gameLoop.asm"
-%include "./src/game/logic/gameCounter.asm"
+%include "./src/game/logic/gameTimer.asm"
 %include "./src/game/logic/getGameInput.asm"
 %include "./src/game/logic/player1Fire.asm"
+%include "./src/game/logic/player2Fire.asm"
 
 %include "./src/game/graphics/mainMenu.asm"
 %include "./src/game/graphics/gameIntro.asm"
 %include "./src/game/graphics/player1Wins.asm"
 %include "./src/game/graphics/player2Wins.asm"
+%include "./src/game/graphics/erasePlayer1.asm"
+%include "./src/game/graphics/erasePlayer2.asm"
 %include "./src/game/graphics/printGameBox.asm"
 %include "./src/game/graphics/printPlayer1.asm"
 %include "./src/game/graphics/printPlayer2.asm"
+%include "./src/game/graphics/printGameTimer.asm"
 %include "./src/game/graphics/printPlayer1Score.asm"
 %include "./src/game/graphics/printPlayer2Score.asm"
-%include "./src/game/graphics/printGameCounter.asm"
 %include "./src/game/graphics/pressEnterToGoBack.asm"
 %include "./src/game/graphics/printPlayer1Bullet.asm"
 %include "./src/game/graphics/printPlayer2Bullet.asm"
+%include "./src/game/graphics/printPlayer1BulletInfo.asm"
+%include "./src/game/graphics/printPlayer2BulletInfo.asm"
 %include "./src/game/graphics/pressEnterToContinue.asm"
 
 %include "./src/terminal/readStdinTermios.asm"
@@ -52,26 +57,14 @@
 
 %include "./src/utils/systemInterruption.asm"
 %include "./src/utils/convertIntToString.asm"
+%include "./src/utils/threads.asm"
 %include "./src/utils/strlen.asm"
 %include "./src/utils/sleep.asm"
-%include "./src/utils/atoi.asm"
+;%include "./src/utils/atoi.asm"  UNUSED -- remove on release
 %include "./src/utils/exit.asm"
-
-; dwtoa is not yet in a folder cause i don't even know how to explain what it does
-%include "dwtoa.asm"
 
 %include "./__dev__/__dev__hang.asm"
 %include "./__dev__/__dev__test.asm"
-
-; ============================ MACROS ============================
-; %macro execute 4
-;   mov eax, %1
-;   mov ebx, %2
-;   mov ecx, %3
-;   mov edx, %4
-;
-;   call systemInterruption
-; %endmacro
 
 ; ============================ Text Section ============================
 section .text
@@ -97,11 +90,12 @@ section .data
 
   STDIN equ 0
   STDOUT equ 1
+  STDERR equ 2
 
   ICANON equ 1 << 1
   ECHO equ 1 << 3
 
-  const10 dd 10
+  count dq MAX_LINES
 
   ANSIHIDE db 27, '[?25l'
   ANSIHIDE.LENGTH equ $-ANSIHIDE
@@ -163,10 +157,8 @@ section .data
   menuOption2.length equ $-menuOption2
   menuOption3 db "[ 2 ] Instrucciones "
   menuOption3.length equ $-menuOption3
-  menuOption4 db "[ 3 ] Opciones "
+  menuOption4 db "[ 3 ] Salir "
   menuOption4.length equ $-menuOption4
-  menuOption5 db "[ 4 ] Salir "
-  menuOption5.length equ $-menuOption5
 
   player1WinsMessage db `\e[0;1m\웃 Player 1 Wins! \e[m\ `
   player1WinsMessage.length equ $-player1WinsMessage
@@ -177,11 +169,14 @@ section .data
   gameInstructions db `\e[31;1m\Turbo\e[m\ \e[0;1m\shoot\e[m\ © es un videojuego ASCII en donde el objetivo es ... `
   gameInstructions.length equ $-gameInstructions
 
+  remainingBulletsInfo db "▲"
+  remainingBulletsInfo.length equ $-remainingBulletsInfo
+
   byeMessage db `\e[0;1m\Bye! \e[m\ `
   byeMessage.length equ $-byeMessage
 
-  timerValue db 60
-  timerValueMessage db "60", 0
+  timerValue db 11
+  gameFinishedFlag db 0
 
   player1 db `\e[0;1m\웃\e[m\ `, 0
   player1.length equ $-player1
@@ -191,9 +186,10 @@ section .data
   bullet1.length equ $-bullet1
   bullet1CurrentPosition db 0
   player1Score db 0
-  player1ScoreMessage db `\e[0;1m\Player 1 Score:\e[m\ `
-  player1ScoreMessage.length equ $-player1ScoreMessage
   player1RemainingBullets db 10
+  player1MovementsInSameAxis db 0
+  player1ScoreMessage db `| \e[0;1m\Player 1 Score:\e[m\ `
+  player1ScoreMessage.length equ $-player1ScoreMessage
 
   player2 db `\e[31;1m\웃\e[m\ `, 0
   player2.length equ $-player2
@@ -203,41 +199,15 @@ section .data
   bullet2.length equ $-bullet2
   bullet2CurrentPosition db 0
   player2Score db 0
-  player2ScoreMessage db `\e[0;1m\Player 2 Score:\e[m\ `
-  player2ScoreMessage.length equ $-player2ScoreMessage
   player2RemainingBullets db 10
+  player2ScoreMessage db `| \e[0;1m\Player 2 Score:\e[m\ `
+  player2ScoreMessage.length equ $-player2ScoreMessage
+
+  emptySpace db " "
+  emptySpace.length equ $-emptySpace
 
   clearTerminal db "                                                                                "
-	clearTerminal.length equ $-clearTerminal
-
-GetStrlen:
-  push    ebx
-
-  xor     ecx, ecx
-  not     ecx
-
-  xor     eax, eax
-  cld
-  repne   scasb
-  mov     byte [edi - 1], 10
-  not     ecx
-  pop     ebx
-  lea     edx, [ecx - 1]
-
-  ret
-
-PrintNum:
-  push    bufferOut
-  push    esi
-
-  call    dwtoa
-
-  mov     edi, bufferOut
-
-  call    GetStrlen
-
-
-  ret
+  clearTerminal.length equ $-clearTerminal
 
 ; ---- Turboshoot
 _start:

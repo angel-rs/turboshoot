@@ -8,6 +8,10 @@
 ; DESCRIPCIÓN:
 
 printPlayer2:
+  push rax
+  push rcx
+  push rdx
+
   call resetCursor
 
   mov ah, [player2CurrentXPosition]
@@ -18,5 +22,9 @@ printPlayer2:
   mov ecx, player2
   mov edx, player2.length
   call print
+
+  pop rdx
+  pop rcx
+  pop rax
 
   ret

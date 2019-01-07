@@ -8,14 +8,14 @@
 ; DESCRIPCIÓN: Muestra el cursor de la terminal
 
 ansiCursorShow:
-  push ecx
-  push edx
+  push rcx
+  push rdx
 
   mov ecx, ANSISHOW
   mov edx, ANSISHOW.LENGTH
   call print
 
-  pop edx
-  pop ecx
+  pop rdx
+  pop rcx
 
   ret
