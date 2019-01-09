@@ -17,6 +17,7 @@
 %include "./src/game/logic/gameTimer.asm"
 %include "./src/game/logic/gameFinished.asm"
 %include "./src/game/logic/getGameInput.asm"
+%include "./src/game/logic/onGameTimerReach0.asm"
 %include "./src/game/logic/player1Fire.asm"
 %include "./src/game/logic/player2Fire.asm"
 %include "./src/game/logic/restoreDefaults.asm"

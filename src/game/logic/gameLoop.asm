@@ -12,15 +12,10 @@ gameLoop:
   call printGameBox
   call printGUI
 
-  ; create thread for counter
-    mov rdi, .timerThread
-    call thread_create
+  mov rdi, .getGameInput                    ; create a thread for reading user input
+  call thread_create
 
-  ; create a thread for reading user input
-    mov rdi, .getGameInput
-    call thread_create
-
-  jmp checkUntilGameFinishes
+  jmp timerThread
 
   .getGameInput:
     ; -- if gameFinishedFlag == 1: kill thread
@@ -37,54 +32,49 @@ gameLoop:
     jmp .getGameInput
 
     .killInputThread:
-      call killThread
-      ret
-
-  .timerThread:
-    ; IN ONE OF THESE TWO LINES BREAKS THE CODE
-    ; cmp byte[timerValue], 9                 ; if timer == 9: remove extra 0 from console
-    ; je .removeExtra0InTimer
-
-    cmp byte[timerValue], 0
-    je .onCounterReach0
-    ; mov al, [timerValue]
-    ; mov ah, [ZERO]
-    ; cmp al, ah                           ; if timer == 9: remove extra 0 from console
-    ; je .onCounterReach0
-
-    call gameTimer
-
-    ; -- sleep one second
-      mov eax, 1
-      mov ebx, 500
+      mov eax, 0
+      mov ebx, 30000000                        ; 30ms/frame
       call sleep
 
-    jmp .timerThread
+      call killThread
 
-    .onCounterReach0:
-      call printGameTimer
-      call killThread                   ; kill thread process
+  timerThread:
+    cmp byte[timerValue], 9                ; if timer == 10
+    je removeExtra0InTimer                  ;     remove extra 0 from console
 
-    .removeExtra0InTimer:
-      ;  -- position cursor
-        mov ah, 41
-        mov al, 24
-        call gotoxy
+    cmp byte[timerValue], 0                 ; if timer == 0:
+    je onGameTimerReach0                    ;     kill the thread
+    jmp continue
 
-      ; -- remove extra 0
-        mov ecx, emptySpace
-        mov edx, emptySpace.length
-        call print
-        ret
+    continue:
+      call gameTimer
 
-checkUntilGameFinishes:
-  mov dh, byte[gameTimer]
-  cmp dh, 0
-  je gameFinished
+      ; -- sleep one second
+        mov eax, 1
+        mov ebx, 0
+        call sleep
 
-  ; -- forced delay
-    mov eax, 0
-    mov ebx, 35000000                        ; 30ms/frame
-    call sleep
+      jmp timerThread
 
-  jmp checkUntilGameFinishes
+; checkUntilGameFinishes:
+;   cmp byte[gameTimer], 0
+;   je gameFinished
+;
+;   ; ; -- forced delay
+;     mov eax, 0
+;     mov ebx, 35000000                        ; 30ms/frame
+;     call sleep
+;
+;   jmp checkUntilGameFinishes
+
+removeExtra0InTimer:
+  ;  -- position cursor
+    mov ah, 41
+    mov al, 24
+    call gotoxy
+
+  ; ; -- remove extra 0
+    mov ecx, emptySpace
+    mov edx, emptySpace.length
+    call print
+  jmp continue
