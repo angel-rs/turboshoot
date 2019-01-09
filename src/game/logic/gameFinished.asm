@@ -9,33 +9,27 @@
 
 gameFinished:
   call clear
-  mov al, 0
-  mov ah, 0
-  call gotoxy
-  mov ecx, player1
-  mov edx, player1.length
-  call print
+  call resetCursor
 
-  call __dev__hang
+  call restoreDefaults            ; reset defaults: values like bullets, the timer, score, etc... (In case they want to play again)
 
+  ; -- checking who won
+    mov ah, byte[player1Score]
+    mov al, byte[player2Score]
 
-  ; -- reset everything back to default
-    call restoreDefaults
-
-  ; -- check who won
-    mov ah, [player1Score]
-    mov al, [player2Score]
-
-    cmp ah, al
-    je .draw
-
-    cmp ah, al
+    cmp ah, al                      ; if ah > al... player1 Wins
     jg player1Wins
 
-    cmp al, ah
-    jg player2Wins
+  ; ---
+    mov ah, byte[player1Score]
+    mov al, byte[player2Score]
 
-    .draw:
-      jmp draw
+    cmp ah, al                      ; if ah < al... player2 Wins
+    jl player2Wins
 
-  ret
+  ; ---
+    mov ah, byte[player1Score]
+    mov al, byte[player2Score]
+
+    cmp ah, al                      ; if same score... Draw
+    je draw

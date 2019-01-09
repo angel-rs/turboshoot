@@ -18,9 +18,9 @@ gameLoop:
   jmp timerThread
 
   .getGameInput:
-    ; -- if gameFinishedFlag == 1: kill thread
-      cmp byte[gameFinishedFlag], 1
-      je .killInputThread                   ; kill thread process
+    ; -- if timer == 0: kill thread
+      cmp byte[timerValue], 1
+      jl killThread                            ; kill thread process
 
     call getGameInput
 
@@ -30,13 +30,6 @@ gameLoop:
       call sleep
 
     jmp .getGameInput
-
-    .killInputThread:
-      mov eax, 0
-      mov ebx, 30000000                        ; 30ms/frame
-      call sleep
-
-      call killThread
 
   timerThread:
     cmp byte[timerValue], 9                ; if timer == 10
@@ -55,17 +48,6 @@ gameLoop:
         call sleep
 
       jmp timerThread
-
-; checkUntilGameFinishes:
-;   cmp byte[gameTimer], 0
-;   je gameFinished
-;
-;   ; ; -- forced delay
-;     mov eax, 0
-;     mov ebx, 35000000                        ; 30ms/frame
-;     call sleep
-;
-;   jmp checkUntilGameFinishes
 
 removeExtra0InTimer:
   ;  -- position cursor

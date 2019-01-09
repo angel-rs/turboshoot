@@ -170,7 +170,7 @@ section .data
   menuOption4 db "[ 3 ] Salir "
   menuOption4.length equ $-menuOption4
 
-  drawMessage db `\e[0;1m\  웃 Draw! \e[m\ \e[31;1m\웃\e[m\ `
+  drawMessage db `\e[0;1m\ 웃  Draw! \e[m\ \e[31;1m\웃\e[m\ `
   drawMessage.length equ $-drawMessage
 
   player1WinsMessage db `\e[0;1m\웃 Player 1 Wins! \e[m\ `

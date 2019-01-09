@@ -8,5 +8,6 @@
 ; DESCRIPCIÓN: Acción a realizar cuando el contador del juego llega a 0
 
 onGameTimerReach0:
-  call printGameTimer
-  call killThread                   ; kill thread process
+  ; -- this is executed by the main process, not a thread
+  call printGameTimer                           ; Print the timer for a last time (the 0 value)
+  jmp gameFinished                              ; Here we check who won; print the winning screen, etc

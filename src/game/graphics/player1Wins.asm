@@ -9,23 +9,20 @@
 
 player1Wins:
   call clear
-
   call printGameBox
 
   ; -- position cursor
-  mov al, 12
-  mov ah, 35
-  call gotoxy
+    mov al, 12
+    mov ah, 35
+    call gotoxy
 
   ; -- print winning message
-  mov ecx, player1WinsMessage
-  mov edx, player1WinsMessage.length
-  call print
+    mov ecx, player1WinsMessage
+    mov edx, player1WinsMessage.length
+    call print
 
-  ; --- sleep 2 seg
-  mov eax, 2
-  call sleep
-
-  call pressEnterToContinue
+  ; --- sleep 1 seg
+    mov eax, 1
+    call sleep
 
   call mainMenu

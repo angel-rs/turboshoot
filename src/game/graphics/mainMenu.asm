@@ -8,7 +8,11 @@
 ; DESCRIPCIÓN: Muestra el menú principal del juego
 
 mainMenu:
+  call clear
   call printGameBox
+
+  mov al, 0
+  mov byte[bufferIn], al                  ; clear bufferIn
 
   ; -> Imprime opciones del menú
   printMenu:

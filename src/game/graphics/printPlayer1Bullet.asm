@@ -13,7 +13,6 @@ printPlayer1Bullet:
 
   mov ah, [bullet1StartPositionX]
   mov al, [temp]
-
   call gotoxy
 
   mov ecx, bullet1

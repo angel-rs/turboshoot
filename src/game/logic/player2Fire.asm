@@ -145,8 +145,8 @@ killPlayer2BulletThread:
   ;restore the bullet start position values
   mov ah, [player2CurrentXPosition]
   mov al, [player2CurrentYPosition]
-  inc ah
-  inc ah
+  dec ah
+  dec ah
 
   mov byte[bullet2StartPositionX], ah
   mov byte[bullet2StartPositionY], al

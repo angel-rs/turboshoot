@@ -9,23 +9,20 @@
 
 draw:
   call clear
-
   call printGameBox
 
   ; -- position cursor
-  mov al, 12
-  mov ah, 35
-  call gotoxy
+    mov al, 12
+    mov ah, 35
+    call gotoxy
 
   ; -- print draw message
-  mov ecx, drawMessage
-  mov edx, drawMessage.length
-  call print
+    mov ecx, drawMessage
+    mov edx, drawMessage.length
+    call print
 
-  ; --- sleep 2 seg
-  mov eax, 2
-  call sleep
-
-  call pressEnterToContinue
+  ; --- sleep 1 seg
+    mov eax, 1
+    call sleep
 
   call mainMenu
