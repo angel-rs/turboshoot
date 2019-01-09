@@ -12,24 +12,34 @@ gameLoop:
   call printGameBox
   call printGUI
 
-  mov rdi, .getGameInput                    ; create a thread for reading user input
+  mov rdi, __getGameInput                    ; create a thread for reading user input
   call thread_create
 
   jmp timerThread
 
-  .getGameInput:
+  __getGameInput:
     ; -- if timer == 0: kill thread
-      cmp byte[timerValue], 1
-      jl killThread                            ; kill thread process
+      cmp byte[timerValue], 0
+      je __killThread                            ; kill thread process
 
     call getGameInput
+
+    ; -- RECHECK: remember that reading the keyboard input halts the code execution
+    ; if timer == 0: kill thread
+      cmp byte[timerValue], 0
+      je __killThread
 
       ; -- forced delay
       mov eax, 0
       mov ebx, 30000000                        ; 30ms/frame
       call sleep
 
-    jmp .getGameInput
+    jmp __getGameInput
+
+    __killThread:
+      call clear
+      mov byte[endGameFlag], 1
+      call killThread
 
   timerThread:
     cmp byte[timerValue], 9                ; if timer == 10

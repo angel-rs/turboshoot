@@ -9,6 +9,8 @@
 
 restoreDefaults:
   ; -- reset everything back to default
+    mov byte[endGameFlag], 0
+
     mov byte[temp], 0
     mov byte[temp2], 0
 

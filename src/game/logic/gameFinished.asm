@@ -11,8 +11,6 @@ gameFinished:
   call clear
   call resetCursor
 
-  call restoreDefaults            ; reset defaults: values like bullets, the timer, score, etc... (In case they want to play again)
-
   ; -- checking who won
     mov ah, byte[player1Score]
     mov al, byte[player2Score]
@@ -33,3 +31,6 @@ gameFinished:
 
     cmp ah, al                      ; if same score... Draw
     je draw
+
+  ; -- unreachable code
+  ret

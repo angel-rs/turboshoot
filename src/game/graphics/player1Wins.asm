@@ -21,6 +21,8 @@ player1Wins:
     mov edx, player1WinsMessage.length
     call print
 
+    call restoreDefaults            ; reset defaults: values like bullets, the timer, score, etc... (In case they want to play again)
+
   ; --- sleep 1 seg
     mov eax, 1
     call sleep

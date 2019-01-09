@@ -10,4 +10,12 @@
 onGameTimerReach0:
   ; -- this is executed by the main process, not a thread
   call printGameTimer                           ; Print the timer for a last time (the 0 value)
-  jmp gameFinished                              ; Here we check who won; print the winning screen, etc
+
+  ; -- forced delay - give a couple of seconds to the thread to kill itself
+    mov eax, 0
+    mov ebx, 30000000
+    call sleep
+
+  cmp byte[endGameFlag], 1
+  je gameFinished                              ; Here we check who won; print the winning screen, etc
+  jmp onGameTimerReach0
