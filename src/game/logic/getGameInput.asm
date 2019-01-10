@@ -13,6 +13,11 @@ getGameInput:
     call getInput                       ; obtener input y es almacenado en bufferIn
 
   ; --- Comparing user input
+    ; Menu actions
+    cmp byte[bufferIn], 27              ; Ascii ESC key: 27
+    je _pauseGame
+
+    ; Player 1 Actions
     cmp byte[bufferIn], 'w'
     je .player1MoveUp
     cmp byte[bufferIn], 'a'
@@ -24,6 +29,7 @@ getGameInput:
     cmp byte[bufferIn], 'q'
     je player1Fire
 
+    ; Player 2 Actions
     cmp byte[bufferIn], 'i'
     je .player2MoveUp
     cmp byte[bufferIn], 'j'
@@ -108,6 +114,64 @@ getGameInput:
     inc byte[bullet1StartPositionX]             ;       same to bullet1StartPositionX
     call printPlayer2
     jmp finishGetGameInput
+
+
+  _pauseGame:
+    call clear
+    call printGameBox
+
+    mov byte[gamePauseFlag], 1                   ; increase gamePauseFlag to 1
+
+    ; --- printing the pause menu
+      mov ah, 35
+      mov al, 6
+      call gotoxy
+
+      mov ecx, inGamePause
+      mov edx, inGamePause.length
+      call print
+
+      mov ah, 28
+      mov al, 9
+      call gotoxy
+
+      mov ecx, inGamePause2
+      mov edx, inGamePause2.length
+      call print
+
+      mov ah, 28
+      mov al, 10
+      call gotoxy
+
+      mov ecx, inGamePause3
+      mov edx, inGamePause2.length
+      call print
+
+
+    mov edx, 2                          ; longitud de la entrada a leer
+    call getInput                       ; obtener input y es almacenado en bufferIn
+
+    cmp byte[bufferIn], 27              ; Ascii ESC key: 27
+    je .resumeGame
+
+    cmp byte[bufferIn], 'q'
+    je .quitGame
+
+    jmp _pauseGame
+
+    .resumeGame:
+      mov byte[gamePauseFlag], 0                 ; game resumed, toggle the flag back to 0
+      call clear
+      call printGameBox
+      call printGUI
+      call printPlayer1
+      call printPlayer2
+      jmp getGameInput
+
+    .quitGame:
+      mov byte[endGameFlag], 1
+      jmp finishGetGameInput
+
 
   finishGetGameInput:
     nop

@@ -19,14 +19,14 @@ gameLoop:
 
   __getGameInput:
     ; -- if timer == 0: kill thread
-      cmp byte[timerValue], 0
+      cmp byte[endGameFlag], 1
       je __killThread                            ; kill thread process
 
     call getGameInput
 
     ; -- RECHECK: remember that reading the keyboard input halts the code execution
     ; if timer == 0: kill thread
-      cmp byte[timerValue], 0
+      cmp byte[endGameFlag], 1
       je __killThread
 
       ; -- forced delay
@@ -42,12 +42,37 @@ gameLoop:
       call killThread
 
   timerThread:
+    cmp byte[gamePauseFlag], 1
+    je .waitForGameToBeResumed
+
     cmp byte[timerValue], 9                ; if timer == 10
     je removeExtra0InTimer                  ;     remove extra 0 from console
 
     cmp byte[timerValue], 0                 ; if timer == 0:
     je onGameTimerReach0                    ;     kill the thread
     jmp continue
+
+    .waitForGameToBeResumed:
+      mov eax, 0
+      mov ebx, 30000000
+      call sleep
+
+      cmp byte[gamePauseFlag], 0          ; if game was resumed
+      je timerThread
+
+      cmp byte[endGameFlag], 1            ; if the user wants to quit the game
+      je .endGame
+      jmp .waitForGameToBeResumed
+
+      .endGame:
+        call clear
+        call resetCursor
+        call printGameBox
+        call restoreDefaults
+        mov eax, 0
+        mov ebx, 30000000
+        call sleep
+        call mainMenu
 
     continue:
       call gameTimer

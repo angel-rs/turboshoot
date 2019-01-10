@@ -142,6 +142,7 @@ section .data
   boxLine2.length equ $-boxLine2
 
   endGameFlag db 0
+  gamePauseFlag db 0
 
   terminal_max_x equ 24               ; Última coordenada en el eje X
   terminal_max_y equ 80               ; Última coordenada en el eje Y
@@ -174,6 +175,13 @@ section .data
   menuOption4 db "[ 3 ] Salir "
   menuOption4.length equ $-menuOption4
 
+  inGamePause db "## PAUSA ##",
+  inGamePause.length equ $-inGamePause
+  inGamePause2 db "[ESC]. Volver a la partida",
+  inGamePause2.length equ $-inGamePause2
+  inGamePause3 db "[Q].   Salir de la partida",
+  inGamePause3.length equ $-inGamePause3
+
   drawMessage db `\e[0;1m\ 웃  Draw! \e[m\ \e[31;1m\웃\e[m\ `
   drawMessage.length equ $-drawMessage
 
@@ -183,7 +191,31 @@ section .data
   player2WinsMessage db `\e[31;1m\웃 Player 2 Wins! \e[m\ `
   player2WinsMessage.length equ $-player2WinsMessage
 
-  gameInstructions db 10, `     \e[31;1m\Turbo\e[m\ \e[0;1m\shoot\e[m\ © es un videojuego multijugador basado en arte ASCII en donde `
+  gameInstructions db `    \e[31;1m\Turbo\e[m\ \e[0;1m\shoot\e[m\ © es un videojuego multijugador basado en arte ASCII en donde `,10
+                   db `    el objetivo es acumular puntos acertando la mayor cantidad de disparos`, 10
+                   db `    posibles al oponente para así ganar la partida.`, 10, 10
+                   db ` ______________\e[0;1m\[JUGADOR 1]\e[m\_____________________________\e[31;1m\[JUGADOR 2]\e[m\_____________`, 10
+                   db `|\e[37m				       |				       |`, 10
+                   db `|\e[37m     |-> Disparo		       |                      Disparo <-|      \e[m\|`, 10
+                   db `|\e[37m     |				       |                                |      \e[m\|`, 10
+                   db `|    \e[0;1m\___    ___\e[m\			       |		       \e[31;1m\ ___    ___\e[m\     |`, 10
+                   db `|   \e[0;1m\|   |  |   |\e[m\		       |		       \e[31;1m\|   |  |   |\e[m\    |`, 10
+                   db `|   \e[0;1m\| Q |  | W |\e[m\ -> Mover hacía	       |        Mover hacía <- \e[31;1m\| I |  | O |\e[m\    |`, 10
+                   db `|   \e[0;1m\|___|  |___|\e[m\    arriba	       |        arriba	       \e[31;1m\|___|  |___|\e[m\    |`, 10
+                   db `|   \e[0;1m\ ___    ___    ___\e[m\		       |		 \e[31;1m\___    ___    ___\e[m\     |`, 10
+                   db `|   \e[0;1m\|   |  |   |  |   |\e[m\		       |		\e[31;1m\|   |  |   |  |   |\e[m\    |`, 10
+                   db `|   \e[0;1m\| A |  | S |  | D |\e[m\ -> Mover hacia | Mover hacía <- \e[31;1m\| J |  | K |  | L |\e[m\    |`, 10
+                   db `|   \e[0;1m\|___|  |___|  |___|\e[m\	   la derecha  | la izquierda   \e[31;1m\|___|  |___|  |___|\e[m\    |`, 10
+                   db `|\e[37m     |      |			       |	                 |      |      \e[m\|`, 10
+                   db `|\e[37m     |      |-> Mover hacía	       |   	  Mover hacía  <-|      |      \e[m\|`, 10
+                   db `|\e[37m     V 	  abajo		       |   	  abajo		        V      \e[m\|`, 10
+                   db `|\e[37m Mover hacía			       |			   Mover hacía \e[m\|`, 10
+                   db `|\e[37m la izquierda			       |			   la derecha  \e[m\|`, 10
+                   db `|______________________________________|_______________________________________|`, 10
+                   db `  \e[37m [ESC]: Pausar la partida\e[m\ `, 0
+
+
+
   gameInstructions.length equ $-gameInstructions
 
   explosion db `\e[33;1m\* \e[m\ `, 0
