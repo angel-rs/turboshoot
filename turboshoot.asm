@@ -106,6 +106,8 @@ section .data
 
   temp db 0                       ; store start Y value of player 1 bullet
   temp2 db 0                      ; store start Y value of player 2 bullet
+  temp3 db 0                      ; store start X value of player 1 bullet
+  temp4 db 0                      ; store start X value of player 2 bullet
 
   ANSIHIDE db 27, '[?25l'
   ANSIHIDE.LENGTH equ $-ANSIHIDE
@@ -181,7 +183,7 @@ section .data
   player2WinsMessage db `\e[31;1m\웃 Player 2 Wins! \e[m\ `
   player2WinsMessage.length equ $-player2WinsMessage
 
-  gameInstructions db `\e[31;1m\Turbo\e[m\ \e[0;1m\shoot\e[m\ © es un videojuego ASCII en donde el objetivo es ... `
+  gameInstructions db 10, `     \e[31;1m\Turbo\e[m\ \e[0;1m\shoot\e[m\ © es un videojuego multijugador basado en arte ASCII en donde `
   gameInstructions.length equ $-gameInstructions
 
   explosion db `\e[33;1m\* \e[m\ `, 0
@@ -193,7 +195,7 @@ section .data
   byeMessage db `\e[0;1m\Bye! \e[m\ `
   byeMessage.length equ $-byeMessage
 
-  timerValue db 3
+  timerValue db 60
   gameFinishedFlag db 0
 
   player1 db `\e[0;1m\웃\e[m\ `, 0

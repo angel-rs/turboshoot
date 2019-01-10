@@ -11,7 +11,7 @@ printPlayer1Bullet:
   call resetCursor
   call gotoxy
 
-  mov ah, [bullet1StartPositionX]
+  mov ah, [temp3]
   mov al, [temp]
   call gotoxy
 

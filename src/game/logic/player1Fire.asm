@@ -16,7 +16,9 @@ player1Fire:                                    ; Every time player 1 Presses Q,
   call printPlayer1RemainingBullets             ;       and print remaining bullets
   mov byte[player1ShotBulletFlag], 1            ;       toggle flag
   mov al, byte[bullet1StartPositionY]           ;       store bullet1StartPositionY in temp
+  mov ah, byte[bullet1StartPositionX]           ;       store bullet1StartPositionX in temp3
   mov byte[temp], al
+  mov byte[temp3], ah
 
   ; -- create bullet thread
     mov rdi, .player1BulletThread
@@ -50,11 +52,11 @@ player1Fire:                                    ; Every time player 1 Presses Q,
   call eraseBullet1
 
   ; --------- checking if wall collision ---------------------
-  cmp byte[bullet1StartPositionX], 75     ; if  wallCollisioned
+  cmp byte[temp3], 75     ; if  wallCollisioned
   je killPlayer1BulletThread              ;     kill thread
   ; ----------------------------------------------------------
 
-  inc byte[bullet1StartPositionX]         ; update bullet position
+  inc byte[temp3]         ; update bullet position
 
   ; -------- checking if collision with enemy bullet --------
   call .checkIfBullet1Collision
@@ -73,25 +75,25 @@ player1Fire:                                    ; Every time player 1 Presses Q,
   jmp .player1BulletThread
 
 .checkIfEnemyCollisionInYAxis:
-  mov ah, [bullet1StartPositionY]
+  mov ah, [temp]
   mov al, [player2CurrentYPosition]
 
   cmp ah, al
   je .checkIfEnemyCollisionInXAxis
   ret
 .checkIfEnemyCollisionInXAxis:
-  mov ah, [bullet1StartPositionX]
+  mov ah, [temp3]
   mov al, [player2CurrentXPosition]
 
   cmp ah, al
-  je .increasePlayer1Score
+  je .Player1CollisionWithEnemy
   ret
 
-  .increasePlayer1Score:
-    inc byte[player1Score]
-    call printPlayer1Score
-    mov ah, [bullet1StartPositionX]
-    mov al, [bullet1StartPositionY]
+  .Player1CollisionWithEnemy:
+    inc byte[player1Score]                        ; increase score
+    call printPlayer1Score                        ; print the update score
+    mov ah, [player2CurrentXPosition]               ;
+    mov al, [player2CurrentYPosition]
     call _bulletCollision
 
   ret
@@ -102,7 +104,7 @@ player1Fire:                                    ; Every time player 1 Presses Q,
 
   ret
 .checkIfBullet1CollisionInYAxis:
-  mov ah, [bullet1StartPositionY]
+  mov ah, [temp]
   mov al, [bullet2StartPositionY]
 
   cmp ah, al
@@ -110,7 +112,7 @@ player1Fire:                                    ; Every time player 1 Presses Q,
 
   ret
 .checkIfBullet1CollisionInXAxis:
-  mov ah, [bullet1StartPositionX]
+  mov ah, [temp]
   mov al, [bullet2StartPositionX]
 
   cmp ah, al
@@ -127,7 +129,7 @@ eraseBullet1:
   call resetCursor
 
   ; -- position cursor
-    mov ah, [bullet1StartPositionX]
+    mov ah, [temp3]
     mov al, [temp]
     call gotoxy
 
@@ -143,13 +145,13 @@ killPlayer1BulletThread:
   mov byte[player1ShotBulletFlag], 0
 
   ;restore the bullet start position values
-  mov ah, [player1CurrentXPosition]
-  mov al, [player1CurrentYPosition]
+  mov ah, [bullet1StartPositionX]
+  mov al, [bullet1StartPositionY]
   inc ah
   inc ah
 
-  mov byte[bullet1StartPositionX], ah
-  mov byte[bullet1StartPositionY], al
+  mov byte[temp3], ah
+  mov byte[temp], al
 
   call killThread
   ret

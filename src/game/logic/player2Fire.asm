@@ -16,7 +16,9 @@ player2Fire:                                    ; Every time player 2 Presses O,
   call printPlayer2RemainingBullets             ;       and print remaining bullets
   mov byte[player2ShotBulletFlag], 1            ;       toggle flag
   mov al, byte[bullet2StartPositionY]           ;       store bullet2StartPositionY in temp2
+  mov ah, byte[bullet2StartPositionX]           ;       store bullet2StartPositionX in temp4
   mov byte[temp2], al
+  mov byte[temp4], ah
 
   ; -- create bullet thread
     mov rdi, .player2BulletThread
@@ -50,11 +52,11 @@ player2Fire:                                    ; Every time player 2 Presses O,
   call eraseBullet2
 
   ; --------- checking if wall collision ---------------------
-  cmp byte[bullet2StartPositionX], 6      ; if  wallCollisioned
+  cmp byte[temp4], 6      ; if  wallCollisioned
   je killPlayer2BulletThread              ;     kill thread
   ; ----------------------------------------------------------
 
-  dec byte[bullet2StartPositionX]         ; update bullet position
+  dec byte[temp4]         ; update bullet position
 
   ; -------- checking if collision with enemy bullet --------
   call .checkIfBullet2Collision
@@ -73,14 +75,14 @@ player2Fire:                                    ; Every time player 2 Presses O,
   jmp .player2BulletThread
 
 .checkIfEnemyCollisionInYAxis:
-  mov ah, [bullet2StartPositionY]
+  mov ah, [temp2]
   mov al, [player1CurrentYPosition]
 
   cmp ah, al
   je .checkIfEnemyCollisionInXAxis
   ret
 .checkIfEnemyCollisionInXAxis:
-  mov ah, [bullet2StartPositionX]
+  mov ah, [temp4]
   mov al, [player1CurrentXPosition]
 
   cmp ah, al
@@ -90,8 +92,8 @@ player2Fire:                                    ; Every time player 2 Presses O,
   .increasePlayer2Score:
     inc byte[player2Score]
     call printPlayer2Score
-    mov ah, [bullet2StartPositionX]
-    mov al, [bullet2StartPositionY]
+    mov ah, [player1CurrentXPosition]
+    mov al, [player1CurrentYPosition]
     call _bulletCollision2
 
   ret
@@ -102,16 +104,16 @@ player2Fire:                                    ; Every time player 2 Presses O,
 
   ret
 .checkIfBullet2CollisionInYAxis:
-  mov ah, [bullet2StartPositionY]
-  mov al, [bullet1StartPositionY]
+  mov ah, [temp2]
+  mov al, [temp]
 
   cmp ah, al
   je .checkIfBullet2CollisionInXAxis
 
   ret
 .checkIfBullet2CollisionInXAxis:
-  mov ah, [bullet2StartPositionX]
-  mov al, [bullet1StartPositionX]
+  mov ah, [temp4]
+  mov al, [temp3]
 
   cmp ah, al
   je _bulletCollision2               ; bullets collided, end thread
@@ -127,8 +129,8 @@ eraseBullet2:
   call resetCursor
 
   ; -- position cursor
-    mov ah, [bullet2StartPositionX]
-    mov al, [bullet2StartPositionY]
+    mov ah, [temp4]
+    mov al, [temp2]
     call gotoxy
 
   ; -- erase it with a emptySpace
