@@ -229,7 +229,7 @@ section .data
   byeMessage db `\e[0;1m\Bye! \e[m\ `
   byeMessage.length equ $-byeMessage
 
-  timerValue db 10
+  timerValue db 5
   gameFinishedFlag db 0
 
   player1 db `\e[0;1m\웃\e[m\ `, 0

@@ -19,14 +19,14 @@ gameLoop:
 
   __getGameInput:
     ; -- if timer == 0: kill thread
-      cmp byte[endGameFlag], 1
+      cmp byte[timerValue], 0                 ; if timer == 0:
       je __killThread                            ; kill thread process
 
     call getGameInput
 
     ; -- RECHECK: remember that reading the keyboard input halts the code execution
     ; if timer == 0: kill thread
-      cmp byte[endGameFlag], 1
+      cmp byte[timerValue], 0                 ; if timer == 0:
       je __killThread
 
       ; -- forced delay
