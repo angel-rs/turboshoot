@@ -104,6 +104,8 @@ section .data
 
   count dq MAX_LINES
 
+  aux1 db 0                       ; aux variable to store mid-way calculations for player1 score
+  aux2 db 0                       ; aux variable to store mid-way calculations for player2 score
   temp db 0                       ; store start Y value of player 1 bullet
   temp2 db 0                      ; store start Y value of player 2 bullet
   temp3 db 0                      ; store start X value of player 1 bullet
@@ -227,7 +229,7 @@ section .data
   byeMessage db `\e[0;1m\Bye! \e[m\ `
   byeMessage.length equ $-byeMessage
 
-  timerValue db 60
+  timerValue db 10
   gameFinishedFlag db 0
 
   player1 db `\e[0;1m\웃\e[m\ `, 0
@@ -238,7 +240,7 @@ section .data
   bullet1.length equ $-bullet1
   bullet1StartPositionX db 22
   bullet1StartPositionY db 13
-  player1Score db 0
+  player1Score dq 0
   player1RemainingBullets db 10
   player1ShotBulletFlag db 0
   player1MovementsInSameAxis db 0
@@ -254,7 +256,7 @@ section .data
   bullet2StartPositionX db 58
   bullet2StartPositionY db 13
   player2MovementsInSameAxis
-  player2Score db 0
+  player2Score dq 0
   player2ShotBulletFlag db 0
   player2RemainingBullets db 10
   player2ScoreMessage db `| \e[0;1m\Player 2 Score:\e[m\ `

@@ -59,7 +59,7 @@ player2Fire:                                    ; Every time player 2 Presses O,
   dec byte[temp4]         ; update bullet position
 
   ; -------- checking if collision with enemy bullet --------
-  call .checkIfBullet2Collision
+  ;call .checkIfBullet2Collision
   ; ----------------------------------------------------------
 
   ; ------------- checking if collision with enemy -----------

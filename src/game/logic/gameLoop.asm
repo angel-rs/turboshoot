@@ -42,8 +42,8 @@ gameLoop:
       call killThread
 
   timerThread:
-    cmp byte[gamePauseFlag], 1
-    je .waitForGameToBeResumed
+    cmp byte[gamePauseFlag], 1             ; if game is paused
+    je .waitForGameToBeResumed             ;      wait for resume
 
     cmp byte[timerValue], 9                ; if timer == 10
     je removeExtra0InTimer                  ;     remove extra 0 from console
@@ -53,6 +53,7 @@ gameLoop:
     jmp continue
 
     .waitForGameToBeResumed:
+      ; delay
       mov eax, 0
       mov ebx, 30000000
       call sleep

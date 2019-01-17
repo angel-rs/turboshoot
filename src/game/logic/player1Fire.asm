@@ -52,14 +52,14 @@ player1Fire:                                    ; Every time player 1 Presses Q,
   call eraseBullet1
 
   ; --------- checking if wall collision ---------------------
-  cmp byte[temp3], 75     ; if  wallCollisioned
+  cmp byte[temp3], 75                     ; if  wallCollisioned
   je killPlayer1BulletThread              ;     kill thread
   ; ----------------------------------------------------------
 
   inc byte[temp3]         ; update bullet position
 
   ; -------- checking if collision with enemy bullet --------
-  call .checkIfBullet1Collision
+  ; call .checkIfBullet1Collision
   ; ----------------------------------------------------------
 
   ; ------------- checking if collision with enemy -----------
@@ -90,9 +90,10 @@ player1Fire:                                    ; Every time player 1 Presses Q,
   ret
 
   .Player1CollisionWithEnemy:
-    inc byte[player1Score]                        ; increase score
-    call printPlayer1Score                        ; print the update score
-    mov ah, [player2CurrentXPosition]               ;
+    inc byte[player1Score]
+    call printPlayer1Score                              ; print the updated score
+
+    mov ah, [player2CurrentXPosition]
     mov al, [player2CurrentYPosition]
     call _bulletCollision
 
@@ -104,16 +105,16 @@ player1Fire:                                    ; Every time player 1 Presses Q,
 
   ret
 .checkIfBullet1CollisionInYAxis:
-  mov ah, [temp]
-  mov al, [bullet2StartPositionY]
+  mov ah, [temp2]
+  mov al, [temp]
 
   cmp ah, al
   je .checkIfBullet1CollisionInXAxis
 
   ret
 .checkIfBullet1CollisionInXAxis:
-  mov ah, [temp]
-  mov al, [bullet2StartPositionX]
+  mov ah, [temp4]
+  mov al, [temp3]
 
   cmp ah, al
   je _bulletCollision               ; bullets collided, end thread

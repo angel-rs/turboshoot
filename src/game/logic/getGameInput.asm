@@ -144,7 +144,7 @@ getGameInput:
       call gotoxy
 
       mov ecx, inGamePause3
-      mov edx, inGamePause2.length
+      mov edx, inGamePause3.length
       call print
 
 
